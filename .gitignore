@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+devtools.history.R
+*/*.pdf
+inst/doc

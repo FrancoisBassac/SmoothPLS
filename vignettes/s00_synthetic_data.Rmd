@@ -1,0 +1,423 @@
+---
+title: "synthetic_data_00"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{synthetic_data_00}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SmoothPLS)
+library(ggplot2)
+library(dplyr)
+```
+
+This document show some examples of some of the package's functions. 
+It is divided by parts dedicated to some subjects.
+
+# Parameters
+
+We will encounter some parameters in this package. Here we will fix them.
+
+```{r}
+nind = 50 # number of individuals (train set)
+start = 0 # First time
+end = 100 # end time
+lambda_0 = 0.2 # Exponential law parameter for state 0 
+lambda_1 = 0.1 # Exponential law parameter for state 1
+prob_start = 0.55 # Probability of starting with state 1
+
+curve_type = 'cat'
+
+TTRatio = 0.2 # Train Test Ratio 
+NotS_ratio = 0.2 # noise variance over total variance for Y
+beta_0_real = 5.4321 # Intercept value for the link between X(t) and Y
+
+nbasis = 15 # number of basis functions
+norder = 4 # 4 for cubic splines basis
+```
+
+# Integral evaluation
+
+## evaluate_id_func_integral
+
+This function evaluate the following integral : $\int_0^T X(t) func(t) dt$.
+With $X(t)$ a categorical functional data which states are 0 or 1.
+WARNING this function as no use if $X(t)$ is a Scalar Functional Data.
+
+```{r}
+id_df = data.frame(id=rep(1,5), time=seq(0, 40, 10), state=c(0, 1, 1, 0, 1))
+id_df
+```
+
+```{r}
+func = function(t){0.01*t^2 - t}
+plot(0:40, func(0:40))
+```
+
+```{r}
+evaluate_id_func_integral(id_df, func)
+```
+
+# Data regularisation
+
+## regularize_time_series
+
+This function regularize a dataframe on another time sequence. If the input dataframe get more than one id, all the ids will share the same time sequence in the output dataframe.
+
+```{r}
+id_df_regul = regularize_time_series(id_df, time_seq = seq(0, 40, 2),
+                                     curve_type = 'cat')
+id_df_regul
+```
+
+```{r}
+print(id_df$time)
+print(id_df_regul$time)
+```
+
+## convert_to_wide_format
+
+This function converts a regularized dataframe into a long format by pivoting the data. Useful for classic Multivariate Functional PLS or else. The input dataframe of *convert_to_wide_format* is the output of the function *regularize_time_series* because after the regularisation, all the individuals have the same time interval and time sampling which allows the pivot table.
+
+```{r}
+id_df_long = convert_to_wide_format(id_df_regul)
+id_df_long
+```
+
+# Other
+
+## from_fd_to_func
+
+This function transform an fd object into a function. This function will be used to easier the integral calculation inside the PLS.
+
+```{r}
+basis = create_bspline_basis(0, 100, 10, 4)
+coef = c(10, 8, 6, 4, 2, 1, 3, 5, 7, 9)
+fd_obj = fda::fd(coef = coef, basisobj = basis)
+func_from_fd = from_fd_to_func(coef = coef, basis = basis)
+```
+
+Here if the fd object :
+
+```{r}
+plot(fd_obj)
+```
+
+Now we can evaluate, we should find the same values :
+
+```{r}
+fda::eval.fd(fd_obj, 13)
+```
+
+# Synthetic one state CFD data
+
+This package provides some function to create some synthetic data. These data are individuals with state 0 or 1. The state law are exponential laws.
+
+One important imput is : typa = 'cat'.
+
+## generate_X_df
+
+This function generate nind individuals, for a time between start and end, with parameters for the two exponential law for state 0 and state 1 lambda_0 and lambda_1. The first state at time = start as the probability prob_start of being 1 (binomial law).
+
+Here we generate df with the declared parameters at the top of this notebook.
+
+```{r}
+df = generate_X_df(nind = nind, start = start,end =  end, curve_type = 'cat',
+                   lambda_0 = lambda_0, lambda_1 = lambda_1,
+                   prob_start = prob_start)
+head(df)
+```
+
+```{r}
+df_2 = generate_X_df(nind=20, start = 13, end = 60, curve_type = 'cat',
+              lambda_0 = 0.21, lambda_1 = 0.13, prob_start = 0.55)
+length(unique(df_2$id))
+```
+
+## plot_individuals
+
+This function plots the selected first individuals of the given dataframe.
+
+```{r}
+plot_CFD_individuals(df)
+```
+
+```{r}
+plot_CFD_individuals(df_2, n_ind_to_plot = 3)
+```
+
+## Create df test
+
+this function generates the test set of X. It uses the same arguments than the previous function *generate_X_df* plus the train test ration TTRatio. It evaluates the number of individuals to create in order to follow the TTRatio for all the individuals, Train set and test set.
+
+```{r}
+nind_test = number_of_test_id(TTRatio = TTRatio, nind = nind)
+
+df_test = generate_X_df(nind_test, start, end, curve_type = 'cat', 
+                        lambda_0, lambda_1, prob_start)
+
+length(unique(df_test$id))
+```
+
+```{r}
+df_test_2 = generate_X_df(nind=number_of_test_id(TTRatio = TTRatio, nind = 80), 
+                          start, end, curve_type = 'cat',
+                          lambda_0, lambda_1, prob_start)
+# Here the number of individuals will be 20 because : 
+# 20 = 0.2 (80 + 20) or 
+# 20 = floor(80*TTRatio/(1-TTRatio))
+length(unique(df_test_2$id))
+```
+
+## Beta_real
+
+This package gives 3 functions to link $X(t)$ with a scalar $Y$ by the following equation : $Y = \beta_0 + \int_{0}^{T}X(t) \beta(t) dt$.
+
+### beta_1_real_func
+
+```{r}
+plot(x=0:100, y=beta_1_real_func(0:100, 100), type='l', main="Beta_1")
+```
+
+### beta_2_real_func
+
+```{r}
+plot(x=0:100, y=beta_2_real_func(0:100, 100), type='l', main="Beta_2")
+```
+
+### beta_3_real_func
+
+```{r}
+plot(x=0:100, y=beta_3_real_func(0:100, 100), type='l', main="Beta_3")
+```
+
+### Other beta functions
+
+```{r}
+plot(x=0:100, y=beta_4_real_func(0:100, 100), type='l', main="Beta_4")
+plot(x=0:100, y=beta_5_real_func(0:100, 100), type='l', main="Beta_5")
+plot(x=0:100, y=beta_6_real_func(0:100, 100), type='l', main="Beta_6")
+plot(x=0:100, y=beta_7_real_func(0:100, 100), type='l', main="Beta_7")
+```
+
+## generate_Y_df
+
+This function generates a Y dataframe base on the following relation between $X(t)$ and $Y$ : $Y = \beta_0 + \int_{0}^{T}X(t) \beta(t) dt$. It also add some noise to Y. The given ration NotS_ratio gives the part of the total variance due to some gaussian noise.
+
+```{r}
+Y_df = generate_Y_df(df, curve_type = 'cat', 
+                     beta_1_real_func, beta_0_real, NotS_ratio)
+names(Y_df)
+```
+
+```{r}
+head(Y_df)
+```
+
+
+We can look at the variance :
+
+```{r}
+var(Y_df$Y_real)
+var(Y_df$Y_noised)
+var(Y_df$Y_real)/var(Y_df$Y_noised)
+(var(Y_df$Y_noised) - var(Y_df$Y_real))/var(Y_df$Y_noised)
+```
+
+```{r}
+par(mfrow=c(1,2))
+hist(Y_df$Y_real)
+hist(Y_df$Y_noised)
+par(mfrow=c(1,1))
+```
+
+We can generate Y_df_test the same way by simply changing df to df_test:
+
+```{r}
+Y_df_test = generate_Y_df(df_test, curve_type = 'cat',
+                          beta_1_real_func, beta_0_real, 
+                          NotS_ratio)
+head(Y_df_test)
+```
+
+# Synthetic SFD data
+We can also generate synthetic Scalar Functional Data SFD.
+The important input is type='num'.
+
+## generate_X_df
+For SFD for X_df two new arguments are important: the noise added to the signal
+and the seed for repeatability.
+```{r}
+df = generate_X_df(nind = nind, start = start,end =  end, curve_type = 'num',
+                   noise_sd = 0.15, seed = 123)
+head(df)
+```
+
+```{r}
+# Visualisation
+ggplot(df, aes(x = time, y = value, group = id, color = factor(id))) +
+  geom_line(alpha = 0.8) +
+  labs(title = "Noised cosinus curves",
+       x = "Time", y = "Value",
+       color = "Individual") +
+  theme_minimal()
+```
+
+## generate_Y_df
+```{r}
+Y_df = generate_Y_df(df = df, curve_type = 'num',
+                     beta_real_func_or_list = beta_1_real_func,
+                     beta_0_real = beta_0_real, NotS_ratio = NotS_ratio,
+                     seed = 123)
+head(Y_df)
+```
+
+## regularize_time_series
+```{r}
+id_df_regul = regularize_time_series(df, time_seq = seq(0, 40, 2),
+                                     curve_type = 'num')
+id_df_regul
+```
+
+## convert_to_wide_format
+```{r}
+id_df_long = convert_to_wide_format(id_df_regul)
+id_df_long
+```
+
+# Synthetic multi state CFD
+
+```{r}
+N_states = 4
+```
+
+```{r}
+# Initialized the lambdas values
+lambdas = lambda_determination(N_states)
+lambdas
+```
+
+```{r}
+# Initialized the transition matrix
+transition_df = transfert_probabilities(N_states)
+transition_df
+```
+
+## Data generation
+```{r}
+df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
+                              lambdas,  transition_df)
+head(df)
+```
+
+We can plot some individuals with the plot_individual() function.
+```{r}
+plot_CFD_individuals(df)
+```
+
+## plotData
+We can use the package *cfda* and its functions to make some analysis on the 
+data.
+```{r}
+cfda::plotData(df)
+```
+## estimate_pt
+We can still use the CFDA package to estimate the probabilities :
+```{r}
+proba = cfda::estimate_pt(df)
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(proba, ribbon = FALSE)
+plot(proba, ribbon = TRUE)
+par(mfrow=c(1,1))
+```
+# Multi state CFD manipulation
+
+Before performing the fpls or the smooth-PLS, we have to manipulate the categorical
+functional data of multiple states into multiple categorical functional data
+of one state each.
+
+```{r}
+head(df)
+```
+We need to order the states
+```{r}
+str(df$state)
+unique(df$state)
+order(unique(df$state)) # Warning, give the indices of the order!
+state_ordered = unique(df$state)[order(unique(df$state))]
+state_ordered
+```
+## state_indicatrice
+This function transform a categorical functional data with its indicatrices
+into a dedicated list of all the state (one per different state)
+
+This function sort the states by ascending order (if numeric) and put the name
+'state_X' as the column of the output concerning the 'X' state.
+
+This function will also work with character states.
+
+*Now for the different lists, the [[i]] element of a list concern the [[i]] states 
+ordered.*
+
+```{r}
+si_df = state_indicatrices(df, id_col='id', time_col='time')
+names(si_df)
+```
+
+```{r}
+head(si_df)
+```
+
+## split_in_state_df
+This function transform a categorical functional data with its indicatrices
+into a dedicated list of all the state (one per different state)
+```{r}
+split_df = split_in_state_df(si_df, id_col='id', time_col='time')
+names(split_df)
+mode(split_df)
+```
+
+```{r}
+names(split_df)[4]
+head(split_df[[4]])
+```
+
+## build_df_per_state
+This function takes the data_list with one dataframe per state indicatrice 
+and remove the duplicated state of each state indicatrice with the function 
+*remove_duplicate_states()*.
+
+```{r}
+states_df = build_df_per_state(split_df, id_col='id', time_col='time')
+names(states_df)
+mode(states_df)
+```
+
+```{r}
+plot_CFD_individuals(states_df[[1]])
+```
+
+## cat_data_to_indicatrice
+This function apply all functions to go from a categorical functional data
+with different states to a list of one dataframe per state indicatrice 
+whose duplicated states where removed
+```{r}
+df_list = cat_data_to_indicatrice(df)
+names(df_list)
+head(df_list$state_1)
+```
+
+Now the data is ready for the different operations needed for the Smooth PLS
+or the FPLS.

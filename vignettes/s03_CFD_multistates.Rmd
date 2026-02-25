@@ -1,0 +1,382 @@
+---
+title: "smoothPLS_multi_states_05"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{smoothPLS_multi_states_05}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SmoothPLS)
+library(pls)
+```
+
+This notebook show the Smooth PLS algorithm for a multi-states Categorical 
+Functional Data (MS-CFD).
+
+# Parameters
+```{r}
+
+N_states = 3
+
+nind = 100 # number of individuals (train set)
+start = 0 # First time
+end = 100 # end time
+
+curve_type = 'cat'
+
+TTRatio = 0.2 # Train Test Ratio means we have floor(nind*TTRatio/(1-TTRatio))
+NotS_ratio = 0.2 # noise variance over total variance for Y
+beta_0_real=65.4321 # Intercept value for the link between X(t) and Y
+
+nbasis = 10 # number of basis functions
+norder = 4 # 4 for cubic splines basis
+
+regul_time = seq(start, end, 5) # regularisation time sequence
+regul_time_0 = seq(start, end, 1)
+
+int_mode = 1 # in case of integration errors.
+```
+
+# Data generation
+## lambda_determination
+```{r}
+# Initialized the lambdas values
+lambdas = lambda_determination(N_states)
+lambdas
+```
+
+## tranfert_probabilities
+```{r}
+# Initialized the transition matrix
+transition_df = transfert_probabilities(N_states)
+transition_df
+```
+
+
+## df_cfd
+```{r}
+df_cfd = generate_X_df_multistates(nind = nind, N_states, start, end,
+                              lambdas,  transition_df)
+head(df_cfd)
+```
+
+```{r}
+plot_CFD_individuals(df_cfd)
+```
+
+```{r}
+plot_CFD_individuals(df_cfd, by_cfda = TRUE)
+```
+
+# Basis creation 
+All the states will share the same basis.
+```{r}
+basis = create_bspline_basis(start, end, nbasis, norder)
+#basis = fda::create.fourier.basis(c(start,end), nbasis = nbasis)
+
+# All the states will share the same basis.
+basis_list = obj_list_creation(N_rep = N_states, obj = basis)
+
+plot(basis, main=paste0(nbasis, " ", basis$type," functions basis"))
+```
+
+# Data processing
+We have to prepare the data before the FPLS method. For each state, we build its 
+indicatrice function.
+
+```{r}
+names(df_cfd)
+```
+
+## cat_data_to_indicatrice
+```{r}
+df_processed = cat_data_to_indicatrice(df_cfd)
+
+length(df_processed)
+names(df_processed)
+```
+
+```{r}
+head(df_processed$state_3, 20)
+```
+
+# beta list
+```{r}
+##### beta_real #####
+###### beta_0_real ######
+beta_0_real
+```
+
+```{r}
+beta_func_list = beta_list_generation(N_states = N_states)
+```
+
+
+```{r}
+for(i in 1:length(beta_func_list)){
+  plot(0:end,  beta_func_list[[i]](0:end, end_time = end),
+       ylab=paste0("Beta(t) n°=", i), type = 'l')
+  title(paste0("Beta(t) n°=", i))
+}
+```
+
+# Y evaluation
+Y generation is based on the following equation : 
+$Y = \beta_0 + \sum_{i=1}^K \int_0^T \beta_i(t) ind_i(t) dt $
+with $ind_i(t) = \{0, 1\}_{t \in [0, T]}$ the indicatrice function of the state $i$.
+
+We link $\beta_i$ with the $state_i$.
+
+```{r}
+Y_df = generate_Y_df(df = df_processed, curve_type = curve_type,
+                     beta_real_func_or_list =  beta_func_list,
+                     beta_0_real = beta_0_real,
+                     NotS_ratio = NotS_ratio)
+Y = Y_df$Y_noised
+names(Y_df)
+```
+
+```{r}
+head(Y_df)
+```
+
+# Test set
+
+```{r df_test}
+nind_test = floor(nind*TTRatio/(1-TTRatio))
+df_test = generate_X_df_multistates(nind = nind_test, N_states, start, end,
+                              lambdas,  transition_df)
+```
+
+```{r}
+df_test_processed = cat_data_to_indicatrice(df_test)
+
+Y_df_test = generate_Y_df(df_test_processed, curve_type = curve_type,
+                          beta_real_func_or_list = beta_func_list,
+                          beta_0_real = beta_0_real,
+                          NotS_ratio= NotS_ratio)
+```
+
+
+# PLS functions
+
+## Naive PLS
+```{r}
+naivePLS_obj = naivePLS(df_list = df_cfd, Y = Y, regul_time_obj = regul_time,
+                        curve_type_obj = 'cat', 
+                        id_col_obj = 'id', time_col_obj = 'time',
+                        print_steps = TRUE, plot_rmsep = TRUE,
+                        print_nbComp = TRUE,plot_reg_curves = TRUE)
+```
+
+## Functional PLS
+```{r}
+fpls_obj = funcPLS(df_list = df_cfd, Y = Y_df$Y_noised,
+                   basis_obj = basis,
+                   curve_type_obj = 'cat',
+                   regul_time_obj = regul_time,
+                   id_col_obj = 'id', time_col_obj = 'time',
+                   print_steps = TRUE, plot_rmsep = TRUE, 
+                   print_nbComp = TRUE, plot_reg_curves = TRUE)
+```
+
+## Smooth PLS
+```{r}
+spls_obj = smoothPLS(df_list = df_cfd, Y = Y_df$Y_noised, basis_obj = basis,
+                     orth_obj = TRUE, curve_type_obj = 'cat',
+                     int_mode = 1, 
+                     id_col_obj ='id', time_col_obj = 'time',
+                     print_steps = TRUE, plot_rmsep = TRUE,
+                     print_nbComp = TRUE, plot_reg_curves = TRUE)
+```
+
+```{r}
+names(spls_obj$reg_obj)
+```
+
+# Curves comparison
+```{r}
+# Warning ms_spls_obj$delta_ms_list[[1]] is the intercept!
+cat("curve_1 : smooth PLS regression curve.\n")
+cat("curve_2 : functional PLS regression curve.\n")
+cat("curve_3 : naive PLS regression coefficients\n")
+
+for(i in 1:N_states){
+  start = 0
+  print(paste0("State_", (i)))
+  evaluate_curves_distances(real_f = beta_func_list[[i]],
+                          regul_time = regul_time, 
+                          fun_fd_list = list(spls_obj$reg_obj[[i+1]], 
+                                             fpls_obj$reg_obj[[i+1]],
+                                             approxfun(
+                                               x = regul_time,
+                                               y = naivePLS_obj$opti_reg_coef[
+                                                 start:(start+length(regul_time)
+                                                        )])
+                                             )
+                          )
+  start = start + length(regul_time)
+  
+}
+
+
+```
+
+```{r}
+for(i in 1:N_states){
+  start = 0
+  
+  y_lim = eval_max_min_y(f_list = list(spls_obj$reg_ob[[i+1]],
+                                       fpls_obj$reg_ob[[i+1]],
+                                       approxfun(
+                                         x = regul_time,
+                                         y = naivePLS_obj$opti_reg_coef[
+                                           start:(start+length(regul_time))]),
+                                       beta_func_list[[i]]
+                                       ), 
+                         regul_time = regul_time_0)
+  
+  plot(regul_time_0, beta_func_list[[i]](regul_time_0), col = 'black', 
+       ylim = y_lim, xlab = 'Time', ylab = 'Value', type = 'l')
+  lines(regul_time_0, approxfun(x = regul_time,
+                                y = naivePLS_obj$opti_reg_coef[
+                                  start:(start+
+                                           length(regul_time))])(regul_time_0), 
+       col = 'green')
+  title(paste0(names(spls_obj$reg_obj)[i+1], " regression curves"))
+  plot(spls_obj$reg_obj[[i+1]], col = 'blue', add = TRUE)
+  plot(fpls_obj$reg_obj[[i+1]], col = 'red', add = TRUE)
+  legend("topleft",
+         legend = c("Real curve", "NaivePLS coef", 
+                    "SmoothPLS reg curve", "FunctionalPLS reg curve"),
+         col = c("black", "green", "blue", "red"),
+         lty = 1,
+         lwd = 1)
+  
+  start = start + length(regul_time)
+}
+```
+
+# Results
+```{r}
+train_results = data.frame(matrix(ncol = 5, nrow = 3))
+colnames(train_results) = c("PRESS", "RMSE", "MAE", "R2", "var_Y")
+rownames(train_results) = c("NaivePLS", "FPLS", "SmoothPLS")
+
+test_results = train_results
+```
+
+```{r}
+print(paste0("There is ", 100*NotS_ratio, "% of noised in Y"))
+```
+
+## Train set
+```{r}
+Y_train = Y_df$Y_noised
+
+# Naive
+Y_hat = predict(naivePLS_obj$plsr_model, 
+                ncomp = naivePLS_obj$nbCP_opti, 
+                newdata = naivePLS_obj$plsr_model$model$`as.matrix(df_mod_wide)`)
+train_results["NaivePLS", ] = evaluate_results(Y_train, Y_hat)
+
+
+# FPLS
+Y_hat_fpls = (predict(fpls_obj$plsr_model, ncomp = fpls_obj$nbCP_opti,
+                newdata = fpls_obj$trans_alphas) 
+              + fpls_obj$reg_obj$Intercept
+              + mean(Y))
+
+Y_hat_fpls = smoothPLS_predict(df_predict_list = df_cfd,
+                               delta_list = fpls_obj$reg_obj, 
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode,
+                               regul_time_obj = regul_time)
+
+train_results["FPLS", ] = evaluate_results(Y_train, Y_hat_fpls)
+
+# Smooth PLS
+Y_hat_spls = smoothPLS_predict(df_predict_list = df_cfd,
+                               delta_list = spls_obj$reg_obj, 
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode,
+                               regul_time_obj = regul_time)
+
+train_results["SmoothPLS", ] = evaluate_results(Y_train, Y_hat_spls)
+
+train_results["NaivePLS", "nb_cp"] = naivePLS_obj$nbCP_opti
+train_results["FPLS", "nb_cp"] = fpls_obj$nbCP_opti
+train_results["SmoothPLS", "nb_cp"] = spls_obj$nbCP_opti
+
+```
+
+```{r}
+train_results
+```
+## Test set 
+```{r}
+Y_test = Y_df_test$Y_noised
+
+# Naive
+df_test_wide = naivePLS_formating(df_list = df_test,
+                                  regul_time_obj = regul_time,
+                                  curve_type_obj = curve_type, 
+                                  id_col_obj = 'id', time_col_obj = 'time')
+
+Y_hat = predict(naivePLS_obj$plsr_model,
+                ncomp = naivePLS_obj$nbCP_opti, 
+                newdata = as.matrix(df_test_wide))
+test_results["NaivePLS", ] = evaluate_results(Y_test, Y_hat)
+
+# FPLS
+Y_hat_fpls = smoothPLS_predict(df_predict_list = df_test,
+                               delta_list = fpls_obj$reg_obj,
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode, 
+                               regul_time_obj = regul_time) 
+
+test_results["FPLS", ] = evaluate_results(Y_test, Y_hat_fpls)
+
+# Smooth PLS
+Y_hat_spls = smoothPLS_predict(df_predict_list = df_test,
+                               delta_list = spls_obj$reg_obj,
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode, 
+                               regul_time_obj = regul_time)
+
+test_results["SmoothPLS", ] = evaluate_results(Y_test, Y_hat_spls)
+
+test_results["NaivePLS", "nb_cp"] = naivePLS_obj$nbCP_opti
+test_results["FPLS", "nb_cp"] = fpls_obj$nbCP_opti
+test_results["SmoothPLS", "nb_cp"] = spls_obj$nbCP_opti
+```
+
+```{r}
+test_results
+```
+
+## Plot results
+```{r}
+train_results
+
+test_results
+```
+
+```{r}
+plot_model_metrics_base(train_results, test_results)
+```
+
+```{r}
+plot_model_metrics_base(train_results, test_results,
+                        models_to_plot = c('FPLS', 'SmoothPLS'))
+```
+

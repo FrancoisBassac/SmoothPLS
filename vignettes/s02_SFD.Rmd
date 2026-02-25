@@ -1,0 +1,398 @@
+---
+title: "smoothPLS_ScalarFD_04"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{smoothPLS_ScalarFD_04}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SmoothPLS)
+library(ggplot2)
+```
+
+This notebook present a way of performing th Smooth PLs algorithm for a 
+Scalar Functional Data.
+
+It shows that Smooth PLS over perform FPLS with a time vector regul_time without
+a lot of points, and even with a lot of points.
+
+# Parameters
+```{r}
+nind = 100 # number of individuals (train set)
+start = 0 # First time
+end = 100 # end time
+
+lambda_0 = 0.2 # Exponential law parameter for state 0 
+lambda_1 = 0.1 # Exponential law parameter for state 1
+prob_start = 0.5 # Probability of starting with state 1
+
+curve_type = 'num'
+
+TTRatio = 0.2 # Train Test Ratio means we have floor(nind*TTRatio/(1-TTRatio))
+# individuals in the test set
+NotS_ratio = 0.2 # noise variance over total variance for Y
+beta_0_real=5.4321 # Intercept value for the link between X(t) and Y
+
+nbasis = 10 # number of basis functions
+norder = 4 # 4 for cubic splines basis
+
+regul_time = seq(start, end, 5)
+regul_time_0 = seq(start, end, 1)
+
+beta_real_func = beta_4_real_func # link between X(t) and Y
+
+int_mode = 2 # in case of integration errors.
+```
+
+# Synthetic SFD data
+We can also generate synthetic Scalar Functional Data SFD.
+The important input is type='num'.
+
+# Generate_X_df
+For SFD for X_df two new arguments are important: the noise added to the signal
+and the seed for repeatability.
+```{r}
+df = generate_X_df(nind = nind, start = start,end =  end, curve_type = 'num',
+                   noise_sd = 0.15, seed = 123)
+head(df)
+```
+
+```{r}
+# Visualisation
+ggplot(df, aes(x = time, y = value, group = id, color = factor(id))) +
+  geom_line(alpha = 0.8) +
+  labs(title = "Noised cosinus curves",
+       x = "Time", y = "Value",
+       color = "Individual") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+
+
+# Data manipulation
+## regularize_time_series
+```{r}
+df_regul = regularize_time_series(df, time_seq = regul_time,
+                                     curve_type = 'num')
+df_regul
+```
+
+## convert_to_wide_format
+```{r}
+df_wide = convert_to_wide_format(df_regul)
+df_wide
+```
+
+# generate_Y_df
+
+```{r}
+plot(regul_time_0, beta_real_func(regul_time_0))
+```
+
+
+
+WARNING! Here we have to regularize X(t) before evaluating Y!
+```{r}
+Y_df = generate_Y_df(df = df_regul, curve_type = 'num',
+                     beta_real_func_or_list = beta_real_func,
+                     beta_0_real = beta_0_real, NotS_ratio = NotS_ratio,
+                     seed = 123)
+Y = Y_df$Y_noised
+head(Y_df)
+```
+
+```{r hist Y noised}
+par(mfrow=c(1, 2))
+hist(Y_df$Y_real)
+hist(Y_df$Y_noised)
+par(mfrow=c(1, 1))
+```
+
+# Basis
+```{r basis creation}
+basis = create_bspline_basis(start, end, nbasis, norder)
+#basis = fda::create.fourier.basis(rangeval=c(start, end), nbasis=(nbasis)) 
+plot(basis, main=paste0(nbasis, " Function basis"))
+```
+
+# Naive PLS
+
+```{r}
+naive_pls_obj = naivePLS(df_list = df, Y = Y_df$Y_noised,
+                        regul_time_obj = regul_time,
+                        curve_type_obj = 'num', 
+                        id_col_obj = 'id', time_col_obj = 'time',
+                        print_steps = TRUE, plot_rmsep = TRUE,
+                        print_nbComp = TRUE, plot_reg_curves = TRUE)
+```
+
+## Regression coefficients
+```{r}
+for(i in 2:length(naive_pls_obj$reg_obj)){
+  plot(naive_pls_obj$reg_obj[[i]])
+  title(naive_pls_obj$curves_names[i-1])
+}
+plot(naive_pls_obj$reg_obj$Num_1, 
+   xlab='regul_time', ylab='beta coefficient value', 
+   main="naive pls regression coefficients")
+lines(x = regul_time, y = naive_pls_obj$reg_obj$Num_1[, 2], col='blue')
+lines(x = regul_time_0, y=beta_real_func(start:end, end), col='red')
+```
+
+# FPLS
+```{r}
+fpls_obj = funcPLS(df_list = df, Y = Y_df$Y_noised,
+                   basis_obj = basis,
+                   curve_type_obj = 'num',
+                   regul_time_obj = regul_time,
+                   id_col_obj = 'id',time_col_obj = 'time',
+                   print_steps = TRUE, plot_rmsep = TRUE, 
+                   print_nbComp = TRUE, plot_reg_curves = TRUE)
+```
+
+#Smooth PLS
+```{r}
+spls_obj = smoothPLS(df_list = df, Y = Y_df$Y_noised, basis_obj = basis, 
+                     orth_obj = TRUE, curve_type_obj = curve_type, 
+                     regul_time_obj = regul_time,
+                     int_mode = int_mode, print_steps = TRUE, plot_rmsep = TRUE,
+                     print_nbComp = TRUE, plot_reg_curves = TRUE)
+```
+
+## Delta
+```{r}
+delta_0 = spls_obj$reg_obj$Intercept
+print(delta_0)
+
+delta = spls_obj$reg_obj$NumFD_1
+
+y_lim = eval_max_min_y(f_list = list(beta_real_func, delta), 
+                       regul_time = regul_time)
+
+
+plot(regul_time, beta_real_func(regul_time), type='l', xlab="Beta_t",
+     ylim = y_lim)
+plot(delta, add=TRUE, col='blue')
+```
+
+# Curve comparison
+```{r}
+cat("curve_1 : smooth PLS regression curve.\n")
+cat("curve_2 : functional PLS regression curve.\n")
+cat("curve_3 : naive PLS regression coefficients\n")
+
+evaluate_curves_distances(real_f = beta_real_func,
+                          regul_time = regul_time, 
+                          fun_fd_list = list(
+                            delta, 
+                            fpls_obj$reg_obj$NumFD_1,
+                            approxfun(x = regul_time,
+                                      y = naive_pls_obj$opti_reg_coef)
+                            )
+                          )
+```
+
+```{r}
+y_lim = eval_max_min_y(f_list = list(spls_obj$reg_obj$NumFD_1,
+                                     fpls_obj$reg_obj$NumFD_1,
+                                     approxfun(x = regul_time,
+                                               y = naive_pls_obj$opti_reg_coef),
+                                     beta_real_func ), 
+                         regul_time = regul_time_0)
+  
+plot(regul_time_0, beta_real_func(regul_time_0), col = 'black', 
+     ylim = y_lim, xlab = 'Time', ylab = 'Value', type = 'l')
+lines(regul_time_0, approxfun(x = regul_time, 
+                              y = naive_pls_obj$opti_reg_coef)(regul_time_0), 
+      col = 'green')
+title(paste0(names(spls_obj$reg_obj)[2], " regression curves"))
+plot(spls_obj$reg_obj$NumFD_1, col = 'blue', add = TRUE)
+plot(fpls_obj$reg_obj$NumFD_1, col = 'red', add = TRUE)
+legend("bottomleft",
+       legend = c("Real curve", "NaivePLS coef", 
+                  "SmoothPLS reg curve", "FunctionalPLS reg curve"),
+       col = c("black", "green", "blue", "red"),
+       lty = 1,
+       lwd = 1)
+```
+
+```{r}
+y_lim = eval_max_min_y(f_list = list(beta_real_func, 
+                                     spls_obj$reg_obj$NumFD_1,
+                                     fpls_obj$reg_obj$NumFD_1),
+                       regul_time = regul_time)
+
+plot(regul_time_0, beta_real_func(regul_time_0), type='l', xlab="Beta_t",
+     ylim = y_lim, lwd = 2)
+plot(spls_obj$reg_obj$NumFD_1, add=TRUE, col='blue', lwd = 1)
+plot(fpls_obj$reg_obj$NumFD_1, add=TRUE, col='red', lwd = 1)
+legend("bottomleft",
+       legend = c("Real curve", 
+                  "SmoothPLS reg curve", "FunctionalPLS reg curve"),
+       col = c("black", "blue", "red"),
+       lty = 1,
+       lwd = 1)
+```
+
+```{r}
+evaluate_curves_distances(real_f = beta_real_func,
+                          regul_time = regul_time,
+                          fun_fd_list = list(spls_obj$reg_obj$NumFD_1,
+                                             fpls_obj$reg_obj$NumFD_1))
+```
+
+Plot the second derivatives for the smoothness :
+```{r}
+plot((fda::deriv.fd(expr = spls_obj$reg_obj$NumFD_1, Lfdobj = 2)), 
+     col='blue')
+plot((fda::deriv.fd(expr = fpls_obj$reg_obj$NumFD_1, Lfdobj = 2)),
+     add=TRUE, col='red')
+title("Second derivatives")
+legend("bottomleft",
+         legend = c("delta_SmoothPLS''", "delta_FPLS''"),
+         col = c("blue", "red"),
+         lty = 1,
+         lwd = 1)
+```
+
+# Results
+```{r}
+train_results = data.frame(matrix(ncol = 5, nrow = 3))
+colnames(train_results) = c("PRESS", "RMSE", "MAE", "R2", "var_Y")
+rownames(train_results) = c("NaivePLS", "FPLS", "SmoothPLS")
+
+test_results = train_results
+```
+
+```{r}
+print(paste0("There is ", 100*NotS_ratio, "% of noised in Y"))
+```
+
+## Train Set
+```{r}
+Y_train = Y_df$Y_noised
+
+# Naive
+Y_hat = predict(naive_pls_obj$plsr_model, 
+                ncomp = naive_pls_obj$nbCP_opti, 
+                newdata = as.matrix(df_wide[, -c(1)]))
+train_results["NaivePLS", ] = evaluate_results(Y_train, Y_hat)
+
+
+# FPLS
+Y_hat_fpls = (predict(fpls_obj$plsr_model, ncomp = fpls_obj$nbCP_opti,
+                newdata = fpls_obj$trans_alphas) 
+              + fpls_obj$reg_obj$Intercept
+              + mean(Y))
+
+Y_hat_fpls = smoothPLS_predict(df_predict_list = df,
+                               delta_list = fpls_obj$reg_obj, 
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode,
+                               regul_time_obj = regul_time)
+
+train_results["FPLS", ] = evaluate_results(Y_train, Y_hat_fpls)
+
+# Smooth PLS
+Y_hat_spls = smoothPLS_predict(df_predict_list = df,
+                               delta_list = spls_obj$reg_obj, 
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode,
+                               regul_time_obj = regul_time)
+
+train_results["SmoothPLS", ] = evaluate_results(Y_train, Y_hat_spls)
+
+train_results["NaivePLS", "nb_cp"] = naive_pls_obj$nbCP_opti
+train_results["FPLS", "nb_cp"] = fpls_obj$nbCP_opti
+train_results["SmoothPLS", "nb_cp"] = spls_obj$nbCP_opti
+
+```
+
+```{r}
+train_results
+```
+
+## Test Set
+Test set creation
+```{r}
+nind_test = number_of_test_id(TTRatio = TTRatio, nind = nind)
+
+df_test = generate_X_df(nind = nind_test, start = start, end = end, 
+                        curve_type = curve_type, lambda_0 = lambda_0, lambda_1 = lambda_1,
+                        prob_start = prob_start)
+
+Y_df_test = generate_Y_df(df_test, curve_type = curve_type, 
+                          beta_real_func_or_list = beta_real_func, 
+                          beta_0_real, NotS_ratio, 
+                          id_col = 'id', time_col = 'time')
+
+df_test_regul = regularize_time_series(df_test, time_seq = regul_time,
+                                       curve_type = curve_type)
+df_test_wide = convert_to_wide_format(df_test_regul)
+```
+
+
+Evaluation
+```{r}
+
+Y_test = Y_df_test$Y_noised
+
+# Naive
+Y_hat = predict(naive_pls_obj$plsr_model,
+                ncomp = naive_pls_obj$nbCP_opti, 
+                newdata = as.matrix(df_test_wide[, -c(1)]))
+test_results["NaivePLS", ] = evaluate_results(Y_test, Y_hat)
+
+# FPLS
+Y_hat_fpls = smoothPLS_predict(df_predict_list = df_test,
+                               delta_list = fpls_obj$reg_obj,
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode, 
+                               regul_time_obj = regul_time) 
+
+test_results["FPLS", ] = evaluate_results(Y_test, Y_hat_fpls)
+
+# Smooth PLS
+Y_hat_spls = smoothPLS_predict(df_predict_list = df_test,
+                               delta_list = list(delta_0, delta),
+                               curve_type_obj = curve_type,
+                               int_mode = int_mode, 
+                               regul_time_obj = regul_time)
+
+test_results["SmoothPLS", ] = evaluate_results(Y_test, Y_hat_spls)
+
+test_results["NaivePLS", "nb_cp"] = naive_pls_obj$nbCP_opti
+test_results["FPLS", "nb_cp"] = fpls_obj$nbCP_opti
+test_results["SmoothPLS", "nb_cp"] = spls_obj$nbCP_opti
+```
+
+```{r}
+test_results
+```
+
+## Plot results
+
+```{r}
+train_results
+test_results
+```
+
+```{r}
+plot_model_metrics_base(train_results, test_results)
+```
+
+```{r}
+plot_model_metrics_base(train_results, test_results,
+                        models_to_plot = c('FPLS', 'SmoothPLS'))
+```
+

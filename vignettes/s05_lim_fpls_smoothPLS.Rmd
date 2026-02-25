@@ -1,0 +1,190 @@
+---
+title: "lim_fpls_smoothPLS_03"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{lim_fpls_smoothPLS_03}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SmoothPLS)
+```
+
+This notebook show the limit convergence of the FPLS method to the Smooth PLS 
+method by increasing the increments on the regularization time vector.
+
+# Parameters
+```{r}
+nind = 300 # number of individuals (train set)
+start = 0 # First time
+end = 100 # end time
+
+lambda_0 = 0.2 # Exponential law parameter for state 0 
+lambda_1 = 0.1 # Exponential law parameter for state 1
+prob_start = 0.5 # Probability of starting with state 1
+
+curve_type = 'cat'
+
+TTRatio = 0.2 # Train Test Ratio means we have floor(nind*TTRatio/(1-TTRatio))
+# individuals in the test set
+NotS_ratio = 0.2 # noise variance over total variance for Y
+beta_0_real=5.4321 # Intercept value for the link between X(t) and Y
+
+nbasis = 10 # number of basis functions
+norder = 4 # 4 for cubic splines basis
+
+regul_time_0 = seq(start, end, 1)
+
+beta_real_func = beta_1_real_func # link between X(t) and Y
+
+int_mode = 1 # in case of integration errors.
+```
+
+```{r}
+plot(regul_time_0, beta_real_func(regul_time_0))
+```
+
+# Data creation
+## df & df_test
+Here we create some data to work with :
+```{r df}
+df = generate_X_df(nind = nind, start = start, end = end, 
+                   curve_type = curve_type,
+                   lambda_0 = lambda_0, lambda_1 = lambda_1, 
+                   prob_start = prob_start)
+
+head(df)
+```
+
+```{r plot df individuals}
+plot_CFD_individuals(df)
+```
+
+```{r df_test}
+nind_test = number_of_test_id(TTRatio = TTRatio, nind = nind)
+
+df_test = generate_X_df(nind = nind_test, start = start, end = end, 
+                        curve_type = curve_type,
+                        lambda_0 = lambda_0, lambda_1 = lambda_1,
+                        prob_start = prob_start)
+print(paste0("We have ", length(unique(df_test$id)), " id on test set."))
+```
+
+## Y_df & Y_df_test
+```{r Y_df & Y_df_test}
+Y_df = generate_Y_df(df, curve_type = curve_type, 
+                     beta_real_func = beta_real_func, 
+                     beta_0_real, NotS_ratio, id_col = 'id', time_col = 'time')
+
+Y_df_test = generate_Y_df(df_test, curve_type = curve_type, 
+                          beta_real_func =  beta_real_func, 
+                          beta_0_real, NotS_ratio, 
+                          id_col = 'id', time_col = 'time')
+Y = Y_df$Y_noised
+names(Y_df)
+```
+
+```{r hist Y noised}
+par(mfrow=c(1, 2))
+hist(Y_df$Y_real)
+hist(Y_df$Y_noised)
+par(mfrow=c(1, 1))
+```
+# Regularisation time sequences
+```{r}
+regul_time = list()
+pas = c(20, 10, 5, 2, 1, 0.5)
+pas = c(20, 5, 1)
+pas = c(20, 15, 10, 5, 2, 1)
+pas = c(20, 10, 2, 0.1, 0.05)
+
+for(i in 1:length(pas)){
+  regul_time = append(regul_time, list(seq(start, end, pas[i])))
+}
+```
+
+# Basis creation 
+```{r basis creation}
+basis = create_bspline_basis(start, end, nbasis, norder)
+# ORTHOGONAL
+#basis = fda::create.fourier.basis(rangeval=c(start, end), nbasis=(nbasis)) 
+plot(basis, main=paste0(nbasis, " Function basis")) # note cubic or Fourier
+```
+
+# Smooth PLS
+```{r}
+spls_obj = smoothPLS(df_list = df, Y = Y, basis_obj = basis, 
+                     orth_obj = TRUE, 
+                     curve_type_obj = curve_type, 
+                     regul_time_obj = regul_time_0,
+                     int_mode = int_mode, 
+                     print_steps = TRUE, plot_rmsep = TRUE,
+                     print_nbComp = TRUE, plot_reg_curves = TRUE )
+```
+
+## delta
+Delta Smooth_PLS
+```{r}
+delta_0 = spls_obj$reg_obj$Intercept
+delta_0
+
+delta = spls_obj$reg_obj$CatFD_1_state_1
+plot(delta)
+```
+
+# FPLS 
+We do different FPLS with different regul_time intervals.
+
+```{r}
+fpls_list = list()
+
+for(i in 1:length(pas)){
+  fpls_obj = funcPLS(df_list = df,Y =  Y, basis_obj = basis,
+                     regul_time_obj = regul_time[[i]],
+                     curve_type_obj = 'cat', 
+                     plot_rmsep = TRUE, print_steps = FALSE,
+                     print_nbComp = TRUE, plot_reg_curves = TRUE)
+  
+  fpls_list = append(fpls_list, list(fpls_obj))
+}
+```
+
+# Curve comparison
+```{r}
+y_lim = eval_max_min_y(f_list = list(beta_real_func, delta), 
+                       regul_time = regul_time_0)
+
+plot(regul_time_0, beta_real_func(regul_time_0), type='l', xlab="Beta_t",
+     ylim = y_lim)
+plot(delta, add=TRUE, col='blue')
+for(i in 1: length(fpls_list)){
+  plot(fpls_list[[i]]$reg_obj$CatFD_1_state_1, add=TRUE, col=(i+1))
+}
+legend("topleft",
+         legend = c("delta_SmoothPLS", paste0("delta_fpls_", as.character(pas))),
+         col = c("blue", c(1:length(pas)+1)),
+         lty = 1,
+         lwd = 1)
+```
+
+```{r}
+beta_list = list()
+for(i in 1: length(fpls_list)){
+  beta_list = append(beta_list, list(fpls_list[[i]]$reg_obj$CatFD_1_state_1))
+}
+
+evaluate_curves_distances(real_f = beta_real_func,
+                          regul_time = regul_time_0,
+                          fun_fd_list = append(list(delta), beta_list))
+
+print(pas)
+```
+
