@@ -24,8 +24,8 @@
 #' "opti_reg_coef", "reg_obj")
 #' @export
 #'
-#' @import pls
-#' @importFrom stats coef
+#' @importFrom pls plsr RMSEP
+#' @importFrom stats coef predict residuals lm.influence
 #'
 #' @author Francois Bassac
 naivePLS <- function(df_list, Y,
@@ -151,7 +151,7 @@ naivePLS <- function(df_list, Y,
          main="Cross Validation", xlab="Components number")
   }
 
-  opt_n_comp = which.min(RMSEP(mpls)$val[1, , ])-1
+  opt_n_comp = which.min(pls::RMSEP(mpls)$val[1, , ])-1
   if(print_nbComp==TRUE){
     print(paste("Optimal number of PLS components : ", opt_n_comp))
   }
