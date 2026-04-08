@@ -46,6 +46,8 @@ create_bspline_basis <- function(start, end, nbasis=10, norder=4){
 #' @returns a list of fd functions
 #' @export
 #'
+#' @importFrom fda fd
+#'
 #' @examples
 #' basis = create_bspline_basis(start = 0, end = 10, nbasis = 5, norder = 4)
 #' plot(basis)
@@ -69,7 +71,7 @@ from_basis_to_fdlist <- function(basis){
     coefs <- diag(nbasis)
     fd_list <- list()
     for (i in 1:nbasis) {
-      fd_list[[i]] <- fd(coefs[, i], basis)
+      fd_list[[i]] <- fda::fd(coefs[, i], basis)
     }
   } else if (is.list(basis) && all(sapply(basis, function(x) inherits(x, "fd")))) {
     fd_list <- basis
@@ -124,7 +126,7 @@ obj_list_creation <- function(N_rep, obj){
 #' @returns a matrix of dimension nbasis X nbasis
 #' @export
 #'
-#' @import fda
+#' @importFrom fda norder.bspline inprod
 #'
 #' @examples
 #' basis = create_bspline_basis(start=0, end=10, nbasis=10, norder=4)
@@ -272,7 +274,7 @@ is_orthogonal <- function(basis, tol = 1e-10) {
 #' @return A list of orthonormalized functions fd or func(t)
 #' @export
 #'
-#' @importFrom fda inprod fd
+#' @importFrom fda inprod fd eval.fd
 #'
 #' @examples
 #'
@@ -569,7 +571,7 @@ evaluate_id_func_integral_deprecated <- function(id_df, func, mode = 1,
 #' @returns a function
 #' @export
 #'
-#' @importFrom fda eval.fd
+#' @importFrom fda eval.fd fd
 #'
 #' @examples
 #' basis = create_bspline_basis(0, 100, 10, 4)
@@ -594,7 +596,7 @@ from_fd_to_func <- function(fd_obj = NULL, coef = NULL, basisobj = NULL) {
   force(basisobj)
 
   fd_func <- function(t) {
-    eval.fd(evalarg = t, fdobj = fd(coef = coef, basisobj = basisobj))
+    fda::eval.fd(evalarg = t, fdobj = fda::fd(coef = coef, basisobj = basisobj))
   }
   return(fd_func)
 }
@@ -949,6 +951,7 @@ plot_CFD_individuals <- function(df_to_plot, n_ind_to_plot = 5,
 #' @returns a plot
 #' @export
 #' @import ggplot2
+#' @importFrom rlang .data
 #'
 #' @author Francois Bassac
 plot_model_metrics_base <- function(train_results, test_results,
@@ -996,7 +999,7 @@ plot_model_metrics_base <- function(train_results, test_results,
     p <- ggplot(metric_data, aes(x = .data$Model,
                                  y = .data$Value, fill = .data$Set)) +
       geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
-      geom_text(aes(label = .data$Label), # Ici aussi
+      geom_text(aes(label = .data$Label),
                 position = position_dodge(width = 0.9),
                 vjust = -0.3, size = 3) +
       labs(title = paste("Comparison", metric, "per model"),
@@ -1028,6 +1031,8 @@ plot_model_metrics_base <- function(train_results, test_results,
 #' @export
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom fda eval.fd
 #'
 #' @author Francois Bassac
 plot_fd_list <- function(fd_list, curves_names, regul_time){
