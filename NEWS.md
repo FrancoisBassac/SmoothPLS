@@ -31,6 +31,6 @@
 
 ### Initial Release
 * **Thesis Milestone**: First functional version used for the initial examples in the doctoral thesis.
-* **Core Algorithms**: Implementation of Smooth PLS for Mixed Functional Data (CFD and SFD).
+* **Core Algorithms**: Implementation of Smooth PLS for Hybrid Functional Data (CFD and SFD).
 * **Basis Expansion**: Support for B-spline basis representation of functional predictors.
 * **Categorical Handling**: Implementation of the "active area" integration concept for state-based predictors.

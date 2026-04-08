@@ -993,9 +993,10 @@ plot_model_metrics_base <- function(train_results, test_results,
   for (metric in metrics) {
     metric_data <- long_results[long_results$Metric == metric, ]
 
-    p <- ggplot(metric_data, aes(x = Model, y = Value, fill = Set)) +
+    p <- ggplot(metric_data, aes(x = .data$Model,
+                                 y = .data$Value, fill = .data$Set)) +
       geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
-      geom_text(aes(label = Label),
+      geom_text(aes(label = .data$Label), # Ici aussi
                 position = position_dodge(width = 0.9),
                 vjust = -0.3, size = 3) +
       labs(title = paste("Comparison", metric, "per model"),
@@ -1003,6 +1004,12 @@ plot_model_metrics_base <- function(train_results, test_results,
       scale_fill_manual(values = c("Train" = "#1b9e77", "Test" = "#d95f02")) +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5))
+
+    p <- ggplot(metric_data, aes(x = .data$Model, y = .data$Value, fill = .data$Set)) +
+      geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
+      geom_text(aes(label = .data$Label), # Ici aussi
+                position = position_dodge(width = 0.9),
+                vjust = -0.3, size = 3)
 
     print(p)
   }
@@ -1036,8 +1043,7 @@ plot_fd_list <- function(fd_list, curves_names, regul_time){
     )
     fd_df <- rbind(fd_df, temp_df)
   }
-
-  ggplot(fd_df, aes(x = time, y = value, color = name)) +
+  ggplot(fd_df, aes(x = .data$time, y = .data$value, color = .data$name)) +
     geom_line(linewidth = 1) +
     labs(title = "Regression curves",
          x = "Time", y = "Value", color = "State") +
