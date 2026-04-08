@@ -14,3 +14,7 @@ Currently in development. Install the stable v0.1.2 using:
 ```R
 # install.packages("devtools")
 devtools::install_github("F-BSC/SmoothPLS")
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/F-BSC/SmoothPLS/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/F-BSC/SmoothPLS/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
