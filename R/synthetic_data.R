@@ -99,7 +99,8 @@ beta_4_real_func <- function(t, end_time=100, drop = NULL){
 #'
 #' @author Francois Bassac
 beta_5_real_func <- function(t, end_time=100, drop=3*100/5){
-  return(beta_5_real = 10*(end_time-t)*(plogis((end_time-t)-drop)-0.5)/end_time)
+  return(beta_5_real = 10*(end_time-t)*(stats::plogis((end_time-t)
+                                                      -drop)-0.5)/end_time)
 }
 
 #' beta_6_real_func
@@ -114,7 +115,6 @@ beta_5_real_func <- function(t, end_time=100, drop=3*100/5){
 #' @returns a value
 #' @export
 #'
-#' @importFrom stats plogis
 #'
 #' @examples
 #' beta_5_real_func(0)
@@ -138,7 +138,6 @@ beta_6_real_func <- function(t, end_time=100, drop=1){
 #' @returns a value
 #' @export
 #'
-#' @importFrom stats plogis
 #'
 #' @examples
 #' beta_5_real_func(0)
@@ -170,7 +169,7 @@ beta_list_generation <- function(N_states=3){
   # beta_1_real_func, beta_2_real_func, beta_3_real_func
 
   if(N_states > 7){
-    stop('beta_list_generation () can not generate more than 14 differents functions')
+    stop('beta_list_generation () can not generate more than 7 differents functions')
   }
 
   beta_list = list(beta_1_real_func, beta_2_real_func, beta_3_real_func,
@@ -209,8 +208,6 @@ beta_list_generation <- function(N_states=3){
 #' @returns the dataframe of the individuals
 #' @export
 #'
-#' @importFrom stats rbinom
-#' @importFrom stats rexp
 #'
 #' @examples
 #' generate_X_df()
@@ -274,8 +271,6 @@ generate_X_df <- function(nind=100, start=0, end=100, curve_type = 'cat',
 #' @returns a dataframe of Y real and noised values
 #' @export
 #'
-#' @importFrom stats rnorm var
-#' @importFrom dplyr full_join
 #'
 #' @examples
 #' df = generate_X_df(nind=100, curve_type = 'cat')
@@ -366,8 +361,7 @@ number_of_test_id <- function(TTRatio = 0.2, nind=100){
 #' @returns the dataframe of the individuals
 #' @export
 #'
-#' @importFrom stats rbinom
-#' @importFrom stats rexp
+#' @importFrom stats rbinom rexp
 #'
 #' @examples
 #' generate_X_df_CFD()
@@ -390,12 +384,13 @@ generate_X_df_CFD <- function(nind=500, start=0, end=100,
 
   df = data.frame()
 
+  df_list <- vector("list", nind)
   for(i in c(1:nind)){
     id = i
     #Initialisation
     time = c(start)
     T_c = start
-    X_0 = rbinom(n=1, prob = prob_start, size = 1)
+    X_0 = stats::rbinom(n=1, prob = prob_start, size = 1)
     X_cs = X_0 # X_Current_state
     state = c(X_cs)
 
@@ -406,7 +401,7 @@ generate_X_df_CFD <- function(nind=500, start=0, end=100,
         lambda = lambda_1
       }
       # Exp law
-      duration = rexp(n=1, rate=lambda)
+      duration = stats::rexp(n=1, rate=lambda)
       # I stay in X_cs for duration
       # Update
       T_c = T_c + duration
@@ -420,10 +415,9 @@ generate_X_df_CFD <- function(nind=500, start=0, end=100,
     # Add last state
     state = c(state, X_cs)
     time = c(time, end)
-    temp = data.frame(id = id, time=time, state=state)
-
-    df = rbind(df, temp)
+    df_list[[i]] <-data.frame(id = id, time=time, state=state)
   }
+  df <- do.call(rbind, df_list)
   return(df)
 }
 
@@ -520,8 +514,8 @@ generate_Y_df_CFD <- function(df, beta_real_func_or_list,
     if(NotS_ratio == 0 | is.null(NotS_ratio)){
       Y_df$Y_noised = Y_df$Y_real
     }else{
-      noise_var = var(Y_df$Y_real) * (NotS_ratio / (1-NotS_ratio))
-      Y_df$Y_noised = Y_df$Y_real + rnorm(n=dim(Y_df)[1],
+      noise_var = stats::var(Y_df$Y_real) * (NotS_ratio / (1-NotS_ratio))
+      Y_df$Y_noised = Y_df$Y_real + stats::rnorm(n=dim(Y_df)[1],
                                           mean=0, sd=sqrt(noise_var))
     }
 
@@ -543,9 +537,9 @@ generate_Y_df_CFD <- function(df, beta_real_func_or_list,
     # Add beta_0_real
     Y_df$Y_real = Y_df$Y_real + beta_0_real
 
-    noise_var = var(Y_df$Y_real) * (NotS_ratio / (1-NotS_ratio))
+    noise_var = stats::var(Y_df$Y_real) * (NotS_ratio / (1-NotS_ratio))
 
-    Y_df$Y_noised = Y_df$Y_real + rnorm(n=length(unique(df[, id_col])),
+    Y_df$Y_noised = Y_df$Y_real + stats::rnorm(n=length(unique(df[, id_col])),
                                         mean=0, sd=sqrt(noise_var))
   }
   return(Y_df)
@@ -599,7 +593,7 @@ generate_X_df_test <- function(TTRatio = 0.2, nind=500, start=0, end=100,
 
 #' generate_X_df_SFD
 #'
-#' This function generate synthetic data of nind X(t) which are noised cosinuses.
+#' This function generate synthetic data of nind X which are noised cosinuses.
 #'
 #' @param nind number of individuals, default 500
 #' @param start first time, default 0
@@ -610,6 +604,8 @@ generate_X_df_test <- function(TTRatio = 0.2, nind=500, start=0, end=100,
 #' @returns a dataframe
 #' @export
 #'
+#' @importFrom stats rnorm runif
+#'
 #' @examples
 #' generate_X_df_SFD(nind = 100, start = 0, end = 100,
 #' noise_sd = 0.1, seed = 123)
@@ -617,36 +613,82 @@ generate_X_df_test <- function(TTRatio = 0.2, nind=500, start=0, end=100,
 #' @author Francois Bassac
 generate_X_df_SFD <- function(nind = 100, start = 0, end = 100,
                               noise_sd = 0.1, seed = 123){
-  set.seed(seed)  # pour reproductibilité
+  set.seed(seed)
 
-  # Vecteur de temps
   time_vec <- seq(start, end, length.out = 101)
 
-  # Initialiser une liste pour stocker les data.frames individuels
   df <- data.frame()
 
+  df_list <- vector("list", nind)
   for (i in 1:nind) {
-    # Fréquence, amplitude et phase aléatoires
-    freq <- runif(1, 0.02, 0.1)
+    # Frequency, amplitude and phase
+    freq <- stats::runif(1, 0.02, 0.1)
     freq <- 1
-    amplitude <- runif(1, 0.5, 1.5)
+    amplitude <- stats::runif(1, 0.5, 1.5)
     amplitude <- 2
-    phase <- runif(1, 0, pi/2)
+    phase <- stats::runif(1, 0, pi/2)
     phase <- 1
 
-    # Valeurs cosinus + bruit normal
+    # cosinus + noise
     values <- amplitude * cos(2 * pi * freq * time_vec/max(time_vec) + phase) +
-      rnorm(length(time_vec), mean = 0, sd = noise_sd)
+      stats::rnorm(length(time_vec), mean = 0, sd = noise_sd)
 
-    df_temp <- data.frame(
+    df_list[[i]] <-data.frame(
       id = i,
       time = time_vec,
       value = values
     )
-    # Fusionner en un seul data.frame
-    df = rbind(df, df_temp)
   }
+  df <- do.call(rbind, df_list)
+  return(df)
+}
 
+#' generate_X_df_SFD_data
+#'
+#' This function generate test data of nind X which are noised cosinuses.
+#'
+#' @param nind number of individuals, default 500
+#' @param start first time, default 0
+#' @param end last time, default 100
+#' @param noise_sd noise added to the signal, default 0.1
+#' @param seed seed for reproductability, default 123
+#'
+#' @returns a dataframe
+#' @export
+#'
+#' @importFrom stats rnorm
+#'
+#' @examples
+#' generate_X_df_SFD(nind = 100, start = 0, end = 100,
+#' noise_sd = 0.1, seed = 123)
+#'
+#' @author Francois Bassac
+generate_X_df_SFD_data <- function(nind = 100, start = 0, end = 100,
+                              noise_sd = 0.1, seed = 123){
+  set.seed(seed)
+
+  time_vec <- seq(start, end, length.out = 101)
+
+  df <- data.frame()
+
+  df_list <- vector("list", nind)
+  for (i in 1:nind) {
+    # Frequency, amplitude and phase
+    freq <- 1
+    amplitude <- 2
+    phase <- 1
+
+    # cosinus + noise
+    values <- amplitude * cos(2 * pi * freq * time_vec/max(time_vec) + phase) +
+      stats::rnorm(length(time_vec), mean = 0, sd = noise_sd)
+
+    df_list[[i]] <-data.frame(
+      id = i,
+      time = time_vec,
+      value = values
+    )
+  }
+  df <- do.call(rbind, df_list)
   return(df)
 }
 
@@ -668,6 +710,8 @@ generate_X_df_SFD <- function(nind = 100, start = 0, end = 100,
 #'
 #' @returns a dataframe
 #'
+#' @importFrom pracma trapz
+#' @importFrom stats rnorm
 #'
 #' @author Francois Bassac
 generate_Y_df_SFD <- function(df, beta_real_func, beta_0_real=5.4321,
@@ -708,7 +752,7 @@ generate_Y_df_SFD <- function(df, beta_real_func, beta_0_real=5.4321,
     Y_df$Y_noised = Y_df$Y_real
   }else{
     noise_var = var(Y_df$Y_real) * (NotS_ratio / (1-NotS_ratio))
-    Y_df$Y_noised = Y_df$Y_real + rnorm(n=length(unique(df[, id_col])),
+    Y_df$Y_noised = Y_df$Y_real + stats::rnorm(n=length(unique(df[, id_col])),
                                         mean=0, sd=sqrt(noise_var))
   }
 
@@ -733,7 +777,6 @@ generate_Y_df_SFD <- function(df, beta_real_func, beta_0_real=5.4321,
 #' @returns a dataframe with the regularized data on time_seq
 #' @export
 #'
-#' @importFrom utils tail
 #'
 #' @examples
 #' id_df = data.frame(id=rep(1,5), time=seq(0, 40, 10), state=c(0, 1, 1, 0, 1))
@@ -807,7 +850,7 @@ regularize_time_series_CFD <- function(df, time_seq = 0:100,
       # Case 2: After last knowed point
       else if (t > max(id_data[[time_col]])) {
         # Last knowed state
-        new_times[[state_col]][i] <- tail(id_data[[state_col]], 1)
+        new_times[[state_col]][i] <- utils::tail(id_data[[state_col]], 1)
       }
       # Case 3: On an existing time
       else if (t %in% id_data[[time_col]]) {
@@ -843,7 +886,7 @@ regularize_time_series_CFD <- function(df, time_seq = 0:100,
 #' @param time_col col_name of df for the time
 #'
 #' @returns a regularized dataframe
-#' @import stats
+#' @importFrom stats approx
 #'
 #'@author Francois Bassac
 regularize_time_series_SFD <- function(df, time_seq = 0:100, id_col='id',
@@ -891,8 +934,8 @@ regularize_time_series_SFD <- function(df, time_seq = 0:100, id_col='id',
 #' @returns the dataframe in wide format
 #' @export
 #'
-#' @importFrom tidyr pivot_wider
-#' @import dplyr
+#' @importFrom tidyr pivot_wider all_of
+#' @importFrom magrittr %>%
 #'
 #' @examples
 #' id_df = data.frame(id=rep(1,5), time=seq(0, 40, 10), state=c(0, 1, 1, 0, 1))
@@ -915,7 +958,7 @@ convert_to_wide_format <- function(df_new, id_col='id', time_col='time') {
   wide_df <- df_new %>%
     tidyr::pivot_wider(
       id_cols = tidyr::all_of(id_col),
-      names_from = time_col,
+      names_from = tidyr::all_of(time_col),
       values_from = tidyr::all_of(value_col)
     )
   return(wide_df)
@@ -944,7 +987,9 @@ convert_to_wide_format <- function(df_new, id_col='id', time_col='time') {
 #' @author Francois Bassac
 lambda_determination <- function(N_states, lambda_values = c(0.05, 0.25)){
   # This function give some lambda values for exponential laws.
-  return(runif(n=N_states, min=min(lambda_values), max=max(lambda_values)))
+  return(stats::runif(n=N_states,
+                      min=min(lambda_values),
+                      max=max(lambda_values)))
 }
 
 
@@ -967,7 +1012,7 @@ lambda_determination <- function(N_states, lambda_values = c(0.05, 0.25)){
 generate_probabilities <- function(N_proba) {
   # This function generate probabilities whose sum is 1,
   # following Dirichlet law.
-  x <- rgamma(N_proba, shape = 1)
+  x <- stats::rgamma(N_proba, shape = 1)
   return(x / sum(x))
 }
 
@@ -1101,6 +1146,8 @@ determine_next_state <- function(current_state, transition_df){
 #' @returns a dataframe of a multistates Categorical Funcitonal Data
 #' @export
 #'
+#' @importFrom stats rexp
+#'
 #' @examples
 #' N_states = 4
 #' lambdas = lambda_determination(N_states)
@@ -1117,7 +1164,7 @@ generate_X_df_multistates <- function(nind = 100, N_states=3, start=0, end=100,
   set.seed(seed = seed)
 
   df = data.frame()
-
+  df_list <- vector("list", nind)
   for(i in c(1:nind)){
     id = i
     #Initialisation
@@ -1132,7 +1179,7 @@ generate_X_df_multistates <- function(nind = 100, N_states=3, start=0, end=100,
       lambda = lambdas[X_cs]
 
       # Exp law
-      duration = rexp(n=1, rate=lambda)
+      duration = stats::rexp(n=1, rate=lambda)
       # I stay in X_cs for duration
       # Update
       T_c = T_c + duration
@@ -1149,16 +1196,60 @@ generate_X_df_multistates <- function(nind = 100, N_states=3, start=0, end=100,
     # Add last state
     state = c(state, X_cs)
     time = c(time, end)
-    temp = data.frame(id = id, time=time, state=state)
-
-    df = rbind(df, temp)
+    df_list[[i]] <-data.frame(id = id, time=time, state=state)
   }
+  df <- do.call(rbind, df_list)
   return(df)
 }
 
 #### Data transformation ####
 
 #' state_indicatrices
+#'
+#' This function takes functional categorical curve as input and tranform it
+#' into as many indicatrices curves as the number of state input
+#' return DATAFRAME
+#' Works even on dataframe without time condition respected
+#' (same start and end)
+#' This function sort the states by ascending order (if numeric) and put the
+#' name 'state_X' as the column of the output concerning the 'X' state.
+#' This function will also work with character states.
+#' Now for the different lists, the ith element of a list concern the ith states
+#' ordered.
+#'
+#' @param data a multistates dataframe ('id', 'time', 'states')
+#' @param id_col a character for the id column, default 'id'
+#' @param time_col a character for the time column, default 'time'
+#'
+#' @returns a dataframe with columns ('id', 'time', list of states_XX)
+#' @export
+#' @importFrom stats setNames
+#'
+#' @examples
+#' N_states = 3
+#' lambdas = lambda_determination(N_states)
+#' transition_df = transfert_probabilities(N_states)
+#'
+#' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
+#' lambdas, transition_df)
+#'
+#' si_df = state_indicatrices(df, id_col='id',
+#' time_col='time')
+#'
+#' @author Francois Bassac
+state_indicatrices <- function(data, id_col='id', time_col = 'time'){
+  state_col = setdiff(names(data), c(id_col, time_col))
+  states = sort(unique(data[[state_col]])) # Tri direct
+
+  indicator_matrix <- sapply(states, function(s) as.numeric(data[[state_col]] == s))
+  colnames(indicator_matrix) <- paste0("state_", states)
+
+  ind <- data.frame(data[, c(id_col, time_col)], indicator_matrix)
+
+  return(ind[order(ind[[id_col]], ind[[time_col]]), ])
+}
+
+#' state_indicatrices_old
 #'
 #' This function takes functional categorical curve as input and tranform it
 #' into as many indicatrices curves as the number of state input
@@ -1186,11 +1277,11 @@ generate_X_df_multistates <- function(nind = 100, N_states=3, start=0, end=100,
 #' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 #' lambdas, transition_df)
 #'
-#' si_df = state_indicatrices(df, id_col='id',
+#' si_df = state_indicatrices_old(df, id_col='id',
 #' time_col='time')
 #'
 #' @author Francois Bassac
-state_indicatrices <- function(data, id_col='id', time_col = 'time'){
+state_indicatrices_old <- function(data, id_col='id', time_col = 'time'){
   # This function takes functional categorical curve as input and tranform it
   # into as many indicatrices curves as the number of state input
   # return DATAFRAME
