@@ -413,13 +413,67 @@ test_basis_properties <- function(basis, name = "Base", tol = 1e-10) {
 
 
 #### Integral evaluation ####
+
+#' evaluate_id_func_integral
+#'
+#' @description
+#' Evaluates the integral \eqn{\int_{\tau_i} f(t) dt} where \eqn{\tau_i} are the active
+#' intervals of a categorical functional data (states 0 or 1).
+#'
+#' @param id_df Dataframe for a single individual with at least columns (id, time, state).
+#' @param func The R function to integrate.
+#' @param id_col Character, name of the id column, default 'id'.
+#' @param time_col Character, name of the time column, default 'time'.
+#' @param rel_tol Relative tolerance for stats::integrate, default 1e-8.
+#' @param subdivisions Max number of subdivisions for integrate, default 100.
+#' @param ... Additional arguments (ignored to prevent passing unused params to func).
+#'
+#' @return A dataframe with the id and the calculated integral value.
+#' @export
+evaluate_id_func_integral <- function(id_df, func,
+                                      id_col = 'id', time_col = 'time',
+                                      rel_tol = .Machine$double.eps^0.5,
+                                      subdivisions = 1000L, ...) { # Augmenté à 1000
+
+  state_col <- setdiff(names(id_df), c(id_col, time_col))
+  id_df <- id_df[order(id_df[[time_col]]), ]
+
+  integral_sum <- 0
+
+  for(i in 1:(nrow(id_df) - 1)) {
+    t1 <- id_df[[time_col]][i]
+    t2 <- id_df[[time_col]][i + 1]
+    current_state <- id_df[[state_col]][i]
+
+    if(as.numeric(current_state) == 1 && t2 > t1) {
+      # tryCatch
+      segment_integral <- stats::integrate(f = func,
+                                           lower = t1,
+                                           upper = t2,
+                                           rel.tol = rel_tol,
+                                           subdivisions = subdivisions,
+                                           stop.on.error = FALSE)
+
+      # If fail we keep the best estimation
+      integral_sum <- integral_sum + segment_integral$value
+
+      if(segment_integral$message != "OK") {
+        warning(paste("Integration issue at id", id_df[[id_col]][1], ":",
+                      segment_integral$message))
+      }
+    }
+  }
+  return(data.frame(id = id_df[[id_col]][1], integral = integral_sum))
+}
+
+
 #' evaluate_id_func_integral
 #'
 #' This function evaluate the integral for a state (0, 1) functional data :
 #' int( X(t) func(t) )dt.
 #' This function works ONLY for a one state CFD!
 #'
-#' @param id_df a single id dataframe of at least columns (id, time)
+#' @param id_df a single id dataframe of at least named columns (id, time)
 #' @param func the function to integrate
 #' @param mode select the integration mode 1 for R function integrate,
 #' 2 for pracma::trapz. default value : 1
@@ -441,7 +495,7 @@ test_basis_properties <- function(basis, name = "Base", tol = 1e-10) {
 #' evaluate_id_func_integral(id_df, function(t){t})
 #'
 #' @author Francois Bassac
-evaluate_id_func_integral <- function(id_df, func, mode = 1,
+evaluate_id_func_integral_deprecated <- function(id_df, func, mode = 1,
                                       id_col = 'id', time_col = 'time',
                                       nb_pt = 10, subdivisions = 100){
   # This function evaluate the integral of id_df$state * func on time interval.
@@ -485,7 +539,8 @@ evaluate_id_func_integral <- function(id_df, func, mode = 1,
       }else if(mode==1){
         # V2
         segment_integral = integrate(f=func, lower=t1, upper=t2,
-                                     subdivisions = subdivisions)
+                                     subdivisions = subdivisions,
+                                     rel.tol = .Machine$double.eps^0.5)
         #print((paste0("segment_integral : ", segment_integral$value)))
         # Add to the total
         integral_sum <- integral_sum + segment_integral$value

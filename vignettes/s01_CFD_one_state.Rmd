@@ -39,7 +39,7 @@ TTRatio = 0.2 # Train Test Ratio means we have floor(nind*TTRatio/(1-TTRatio))
 NotS_ratio = 0.2 # noise variance over total variance for Y
 beta_0_real=5.4321 # Intercept value for the link between X(t) and Y
 
-nbasis = 50 # number of basis functions
+nbasis = 10 # number of basis functions
 norder = 4 # 4 for cubic splines basis
 
 beta_real_func = beta_1_real_func # link between X(t) and Y

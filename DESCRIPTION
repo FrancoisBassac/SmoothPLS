@@ -1,16 +1,17 @@
 Package: SmoothPLS
 Type: Package
 Title: SmoothPLS algorithm for Categorical and Scalar Functional Data 
-Version: 0.1.1
+Version: 0.1.2
+Date: 2026-04-08
 Authors@R: c(
     person(
       "Francois", "Bassac",
-      email = "francois.bassac@decathlon.com",
+      email = "fr.bassac@gmail.com",
       role = c("aut", "cre")
     )
   )
 Description: This package performs the Smooth PLS algorithm.
-    It was developped during a PhD thesis between Decathlon and INRIA 2022-2025.
+    It was developped during a PhD thesis between DECATHLON and INRIA 2022-2026.
     The Smooth PLS method does not decompose the data into a basis. Its 
     philosophy is that we know as precisely the data as we want and that for 
     every PLS component the weight functions are decomposed into the basis.
@@ -19,13 +20,14 @@ Description: This package performs the Smooth PLS algorithm.
     scalar response.
     In order to have a naive baseline, naive PLS method on value function of 
     time is also implemented.
-License: GPL-3
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Imports: 
     cfda (>= 0.12.1),
@@ -39,3 +41,4 @@ Imports:
     stats (>= 4.4.1),
     tidyr (>= 1.3.1),
     utils (>= 4.4.1)
+Config/testthat/edition: 3

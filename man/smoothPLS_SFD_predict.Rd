@@ -7,42 +7,29 @@
 smoothPLS_SFD_predict(
   df_predict,
   delta_spls,
-  regul_time = seq(delta_spls[[2]]$basis$rangeval[1], delta_spls[[2]]$basis$rangeval[2],
-    1),
-  int_mode = 2,
+  basis_obj = NULL,
   id_col = "id",
   time_col = "time",
-  nb_pt = 10,
-  subdivisions = 100
+  ...
 )
 }
 \arguments{
-\item{df_predict}{a dataframe ('id', 'time', 'state') to predict from}
+\item{df_predict}{Dataframe with columns (id, time, value).}
 
-\item{delta_spls}{a list of delta_spls}
+\item{delta_spls}{List containing (intercept, delta_fd_object).}
 
-\item{regul_time}{a vector of time regularization values default delta_fd
-basis rangeval per 1}
+\item{basis_obj}{Optional basis for signal reconstruction. If NULL, uses the basis from delta_fd}
 
-\item{int_mode}{a value of the integration mode, default 1}
+\item{id_col}{Character, name of id column.}
 
-\item{id_col}{a character for the id column, default 'id'}
+\item{time_col}{Character, name of time column.}
 
-\item{time_col}{a character for the time column, default 'time'}
-
-\item{nb_pt}{number of points for the integration, default value : 10}
-
-\item{subdivisions}{default parameter of R function integrate;
-default value : 100}
+\item{...}{Additional arguments for Data2fd or inprod.}
 }
 \value{
-a vector of predicted values
+A numeric vector of predicted values
 }
 \description{
-This function make prediction on new data from pls-cfd delta
-Y = delta_0 + int delta_1(t) X(t) dt.
-This function can be used for a classic functional PLS prediction.
-}
-\author{
-Francois Bassac
+Predicts the response Y for Scalar Functional Data using the analytic L2 inner product.
+This implementation follows the theory from Chapter 7.
 }

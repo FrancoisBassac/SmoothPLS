@@ -914,9 +914,9 @@ convert_to_wide_format <- function(df_new, id_col='id', time_col='time') {
   df_new$time_col <- paste0("t", df_new[[time_col]])
   wide_df <- df_new %>%
     tidyr::pivot_wider(
-      id_cols = all_of(id_col),
+      id_cols = tidyr::all_of(id_col),
       names_from = time_col,
-      values_from = value_col
+      values_from = tidyr::all_of(value_col)
     )
   return(wide_df)
 }

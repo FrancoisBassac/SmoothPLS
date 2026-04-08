@@ -7,43 +7,32 @@
 evaluate_id_func_integral(
   id_df,
   func,
-  mode = 1,
   id_col = "id",
   time_col = "time",
-  nb_pt = 10,
-  subdivisions = 100
+  rel_tol = .Machine$double.eps^0.5,
+  subdivisions = 1000L,
+  ...
 )
 }
 \arguments{
-\item{id_df}{a single id dataframe of at least columns (id, time)}
+\item{id_df}{Dataframe for a single individual with at least columns (id, time, state).}
 
-\item{func}{the function to integrate}
+\item{func}{The R function to integrate.}
 
-\item{mode}{select the integration mode 1 for R function integrate,
-2 for pracma::trapz. default value : 1}
+\item{id_col}{Character, name of the id column, default 'id'.}
 
-\item{id_col}{col_name of df for the id}
+\item{time_col}{Character, name of the time column, default 'time'.}
 
-\item{time_col}{col_name of df for the time}
+\item{rel_tol}{Relative tolerance for stats::integrate, default 1e-8.}
 
-\item{nb_pt}{number of points for the integration, default value : 10}
+\item{subdivisions}{Max number of subdivisions for integrate, default 100.}
 
-\item{subdivisions}{default parameter of R function integrate;
-default value : 100}
+\item{...}{Additional arguments (ignored to prevent passing unused params to func).}
 }
 \value{
-a dataframe with the id and the integral value.
+A dataframe with the id and the calculated integral value.
 }
 \description{
-This function evaluate the integral for a state (0, 1) functional data :
-int( X(t) func(t) )dt.
-This function works ONLY for a one state CFD!
-}
-\examples{
-id_df = data.frame(id=rep(1,5), time=seq(0, 40, 10), state=c(0, 1, 1, 0, 1))
-evaluate_id_func_integral(id_df, function(t){t})
-
-}
-\author{
-Francois Bassac
+Evaluates the integral \eqn{\int_{\tau_i} f(t) dt} where \eqn{\tau_i} are the active
+intervals of a categorical functional data (states 0 or 1).
 }

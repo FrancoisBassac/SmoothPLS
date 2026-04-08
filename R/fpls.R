@@ -35,7 +35,9 @@ funcPLS <- function(df_list, Y, basis_obj, regul_time_obj,
                     print_nbComp = TRUE, plot_reg_curves = FALSE,
                     jackknife = TRUE, validation = 'LOO'){
   #multivariate_fpls
-  cat("### Functional PLS ### \n")
+  if(print_nbComp){
+    cat("### Functional PLS ### \n")
+  }
   # 1 assertion
 
   if(print_steps){

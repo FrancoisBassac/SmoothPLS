@@ -82,7 +82,7 @@ smoothPLS <- function(df_list, Y,
                       jackknife = TRUE,
                       validation = 'LOO'){
 
-  cat("### Smooth PLS ### \n")
+  if(print_nbComp){cat("### Smooth PLS ### \n")}
   # 1 assertion
 
   if(print_steps){
@@ -333,11 +333,20 @@ assert_multivariate_smoothPLS_inputs <- function(df_list, Y, basis_obj,
   }
 
   # regul_time_list
-  if(is.null(regul_time_obj)  &&
-     (curve_type_obj == 'cat' || curve_type_obj[[1]] == 'cat')){
-    regul_time_obj = c(
-      basis_list[[1]]$rangeval[1]:basis_list[[1]]$rangeval[2]
-      )
+  #if(is.null(regul_time_obj)  &&
+  #   (curve_type_obj == 'cat' || curve_type_obj[[1]] == 'cat')){
+  #  regul_time_obj = c(
+  #    basis_list[[1]]$rangeval[1]:basis_list[[1]]$rangeval[2]
+  #    )
+  #}
+
+  # regul_time_list assertion update
+  if (is.null(regul_time_obj) && any(unlist(curve_type_obj) == 'cat')) {
+    # If no regularization time is provided but at least one curve is categorical,
+    # we default to a sequence based on the range of the first basis.
+    regul_time_obj <- seq(basis_list[[1]]$rangeval[1],
+                          basis_list[[1]]$rangeval[2],
+                          by = 1)
   }
   if(mode(regul_time_obj) == "numeric"){
     # Because the functions basis_list_creation works :
@@ -515,7 +524,7 @@ evaluate_lambda <- function(df, basis, curve_type = NULL, int_mode = 1,
   # This function evaluate the Lambda matrix depending of its curve_type
 
   if(is.null(curve_type)){
-    stop("evaluate_lambda() : curve_type should be 'cat' ror 'num'.")
+    stop("evaluate_lambda() : curve_type should be 'cat' or 'num'.")
   }else if(curve_type == 'cat'){
 
     Lambda = evaluate_lambda_CFD(df = df, basis = basis, int_mode = int_mode,
@@ -523,16 +532,22 @@ evaluate_lambda <- function(df, basis, curve_type = NULL, int_mode = 1,
                                  nb_pt = nb_pt, subdivisions = subdivisions)
 
   }else if(curve_type == 'num'){
-    cat("evaluate_lambda_SFD() : int_mode to 2 for pracma::trapz for
+    if(int_mode==1){
+      cat("evaluate_lambda_SFD() : int_mode to 2 for pracma::trapz for
         integration stability.\n")
+      mode_int=2
+    }else{
+      mode_int = int_mode
+    }
+
     Lambda = evaluate_lambda_SFD(df = df, basis = basis,
                                  regul_time = regul_time,
-                                 int_mode = 2,
+                                 int_mode = mode_int,
                                  id_col = id_col, time_col = time_col,
                                  subdivisions = subdivisions)
 
   }else{
-    stop("evaluate_lambda() : curve_type should be 'cat' ror 'num'.")
+    stop("evaluate_lambda() : curve_type should be 'cat' or 'num'.")
   }
   return(Lambda)
 }
@@ -1205,6 +1220,17 @@ smoothPLS_predict_uni <- function(df_predict, delta_list, curve_type = NULL,
          fd object. delta_list[[1]] = delta_0")
   }
 
+  # Time interval check
+  basis_range <- delta_list[[2]]$basis$rangeval
+  data_range <- range(df_predict[[time_col]])
+
+  if(data_range[1] < basis_range[1] || data_range[2] > basis_range[2]) {
+    stop(paste0("Time range mismatch: Data is in [", data_range[1], ", ",
+                data_range[2],
+                "], but basis is defined in [", basis_range[1], ", ",
+                basis_range[2], "]."))
+  }
+
   if(is.null(curve_type)){
     stop("smoothPLS_predict() : curve_type should be 'cat' or 'num'.")
   }else if(curve_type == 'cat'){
@@ -1238,6 +1264,53 @@ smoothPLS_predict_uni <- function(df_predict, delta_list, curve_type = NULL,
 }
 
 
+#' smoothPLS_CFD_predict (Updated v0.1.2)
+#'
+#' @description
+#' Predicts the response variable for Categorical Functional Data (CFD) by
+#' integrating the regression coefficient function over active state intervals.
+#'
+#' @param df_predict Dataframe containing columns for id, time, and state.
+#' @param delta_spls A list containing the scalar intercept and the functional
+#' regression coefficient (fd object).
+#' @param id_col Character, name of the id column, default 'id'.
+#' @param time_col Character, name of the time column, default 'time'.
+#' @param ... Additional parameters passed to evaluate_id_func_integral
+#' (e.g., rel_tol, subdivisions).
+#'
+#' @return A numeric vector of predicted values for each individual.
+#'
+#' @author Francois Bassac
+smoothPLS_CFD_predict <- function(df_predict, delta_spls, id_col = 'id',
+                                  time_col = 'time', ...) {
+
+  delta_0 <- delta_spls[[1]]
+
+  # One-time transformation of the fd object into an R function to optimize
+  # performance within the loop.
+  delta_1_func <- from_fd_to_func(delta_spls[[2]])
+
+  ids_predict <- unique(df_predict[[id_col]])
+  y_hat <- numeric(length(ids_predict))
+
+  for(i in seq_along(ids_predict)) {
+    df_id <- df_predict[df_predict[[id_col]] == ids_predict[i], ]
+
+    # Call the exact segment-based integration function.
+    # This respects the "Active Area" concept by only integrating over
+    # intervals where the state is 1.
+    res_int <- evaluate_id_func_integral(id_df = df_id,
+                                         func = delta_1_func,
+                                         id_col = id_col,
+                                         time_col = time_col,
+                                         ...)
+
+    y_hat[i] <- delta_0 + res_int$integral
+  }
+
+  return(y_hat)
+}
+
 #' smoothPLS_CFD_predict
 #'
 #' This function make prediction on new data from pls-cfd delta
@@ -1254,10 +1327,11 @@ smoothPLS_predict_uni <- function(df_predict, delta_list, curve_type = NULL,
 #' default value : 100
 #'
 #' @returns a vector of predicted values
-#'
+#' @noRd
 #'
 #' @author Francois Bassac
-smoothPLS_CFD_predict <- function(df_predict, delta_spls, int_mode = 1,
+smoothPLS_CFD_predict_Deprecated <- function(df_predict, delta_spls,
+                                             int_mode = 1,
                                   id_col = 'id', time_col = 'time',
                                   nb_pt = 10, subdivisions = 100){
   # This function make prediction on new data from pls-cfd delta
@@ -1286,6 +1360,60 @@ smoothPLS_CFD_predict <- function(df_predict, delta_spls, int_mode = 1,
   return(y_hat)
 }
 
+
+#' smoothPLS_SFD_predict
+#'
+#' @description
+#' Predicts the response Y for Scalar Functional Data using the analytic L2 inner product.
+#' This implementation follows the theory from Chapter 7.
+#'
+#' @param df_predict Dataframe with columns (id, time, value).
+#' @param delta_spls List containing (intercept, delta_fd_object).
+#' @param basis_obj Optional basis for signal reconstruction. If NULL, uses the basis from delta_fd
+#' @param id_col Character, name of id column.
+#' @param time_col Character, name of time column.
+#' @param ... Additional arguments for Data2fd or inprod.
+#'
+#' @return A numeric vector of predicted values
+#'
+#' @importFrom fda Data2fd inprod
+smoothPLS_SFD_predict <- function(df_predict, delta_spls, basis_obj = NULL,
+                                  id_col = 'id', time_col = 'time', ...) {
+
+  delta_0 <- delta_spls[[1]]
+  delta_fd <- delta_spls[[2]]
+
+  if(!inherits(delta_fd, "fd")) {
+    stop("smoothPLS_SFD_predict() : delta_fd must be an 'fd' object.")
+  }
+
+  if(is.null(basis_obj)) {
+    basis_obj <- delta_fd$basis
+  }
+
+  value_col <- setdiff(names(df_predict), c(id_col, time_col))
+  ids <- unique(df_predict[[id_col]])
+  y_hat <- numeric(length(ids))
+
+  for(i in seq_along(ids)) {
+    df_id <- df_predict[df_predict[[id_col]] == ids[i], ]
+
+    # Functional representation of the test signal
+    x_fd <- fda::Data2fd(argvals = df_id[[time_col]],
+                         y = df_id[[value_col]],
+                         basisobj = basis_obj)
+
+    # Analytic inner product calculation <X, delta> [cite: 77, 1348]
+    inner_prod <- fda::inprod(x_fd, delta_fd)
+
+    y_hat[i] <- delta_0 + inner_prod
+  }
+
+  return(y_hat)
+}
+
+
+
 #' smoothPLS_SFD_predict
 #'
 #' This function make prediction on new data from pls-cfd delta
@@ -1304,11 +1432,11 @@ smoothPLS_CFD_predict <- function(df_predict, delta_spls, int_mode = 1,
 #' default value : 100
 #'
 #' @returns a vector of predicted values
-#'
+#' @noRd
 #' @importFrom fda eval.fd
 #'
 #' @author Francois Bassac
-smoothPLS_SFD_predict <- function(df_predict, delta_spls,
+smoothPLS_SFD_predict_Deprecated <- function(df_predict, delta_spls,
                                   regul_time = seq(
                                     delta_spls[[2]]$basis$rangeval[1],
                                     delta_spls[[2]]$basis$rangeval[2], 1),

@@ -2,41 +2,35 @@
 % Please edit documentation in R/smooth_PLS.R
 \name{smoothPLS_CFD_predict}
 \alias{smoothPLS_CFD_predict}
-\title{smoothPLS_CFD_predict}
+\title{smoothPLS_CFD_predict (Updated v0.1.2)}
 \usage{
 smoothPLS_CFD_predict(
   df_predict,
   delta_spls,
-  int_mode = 1,
   id_col = "id",
   time_col = "time",
-  nb_pt = 10,
-  subdivisions = 100
+  ...
 )
 }
 \arguments{
-\item{df_predict}{a dataframe ('id', 'time', 'state') to predict from}
+\item{df_predict}{Dataframe containing columns for id, time, and state.}
 
-\item{delta_spls}{a list of delta_spls}
+\item{delta_spls}{A list containing the scalar intercept and the functional
+regression coefficient (fd object).}
 
-\item{int_mode}{a value of the integration mode, default 1}
+\item{id_col}{Character, name of the id column, default 'id'.}
 
-\item{id_col}{a character for the id column, default 'id'}
+\item{time_col}{Character, name of the time column, default 'time'.}
 
-\item{time_col}{a character for the time column, default 'time'}
-
-\item{nb_pt}{number of points for the integration, default value : 10}
-
-\item{subdivisions}{default parameter of R function integrate;
-default value : 100}
+\item{...}{Additional parameters passed to evaluate_id_func_integral
+(e.g., rel_tol, subdivisions).}
 }
 \value{
-a vector of predicted values
+A numeric vector of predicted values for each individual.
 }
 \description{
-This function make prediction on new data from pls-cfd delta
-Y = delta_0 + int delta_1(t) X(t) dt.
-This function can be used for a classic functional PLS prediction.
+Predicts the response variable for Categorical Functional Data (CFD) by
+integrating the regression coefficient function over active state intervals.
 }
 \author{
 Francois Bassac
