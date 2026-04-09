@@ -99,7 +99,8 @@ plot(spls_model$reg_obj$CatFD_1_state_1, main="SmoothPLS Regression Curve")
 
 ## A detailled example : One-State Categorical Functional Data##
 
-This example illustrates how SmoothPLS processes Categorical Functional Data (CFD) by modeling transitions as functional objects. For a deeper dive, see the full comparison Vignette.
+This example illustrates how SmoothPLS processes Categorical Functional Data (CFD) by modeling transitions as functional objects. 
+For a deeper dive, see the [full vignette](https://francoisbassac.github.io/SmoothPLS/articles/s01_CFD_one_state.html).
 
 1. Data Visualization
 We simulate categorical time series where individuals switch between state 0 and state 1 over time.
