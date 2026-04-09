@@ -21,6 +21,9 @@ Description: This package performs the Smooth PLS algorithm.
     In order to have a naive baseline, naive PLS method on value function of 
     time is also implemented.
 License: MIT + file LICENSE
+URL: https://github.com/FrancoisBassac/SmoothPLS, 
+     https://FrancoisBassac.github.io/SmoothPLS/
+BugReports: https://github.com/FrancoisBassac/SmoothPLS/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

@@ -1,10 +1,12 @@
 # SmoothPLS <img src="man/figures/logo.png" align="right" height="139" />
 
-[![R-CMD-check](https://github.com/FrancoisBassac/SmoothPLS/workflows/R-CMD-check/badge.svg)](https://github.com/FrancoisBassac/SmoothPLS/actions)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/FrancoisBassac/SmoothPLS/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/FrancoisBassac/SmoothPLS/actions/workflows/R-CMD-check.yaml)
 ![Version](https://img.shields.io/badge/version-0.1.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Views](https://komarev.com/ghpvc/?username=FrancoisBassac&repo=SmoothPLS&color=brightgreen)
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://FrancoisBassac.github.io/SmoothPLS/)
 ![Downloads](https://img.shields.io/github/downloads/FrancoisBassac/SmoothPLS/total.svg)
+<!-- badges: end -->
 
 ## 🎯 Overview
 
@@ -36,6 +38,23 @@ Currently in development. Install the latest stable version using:
 # install.packages("devtools")
 devtools::install_github("FrancoisBassac/SmoothPLS")
 ```
+
+---
+
+## 📖 Documentation
+
+The complete package documentation—including function references, detailed vignettes, and usage examples—is available online:
+
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://FrancoisBassac.github.io/SmoothPLS/)
+
+👉 **[Explore the SmoothPLS documentation website](https://FrancoisBassac.github.io/SmoothPLS/)**
+
+---
+
+### What's inside?
+* **Reference**: Comprehensive manual for all functions (including `smoothPLS`, `funcPLS`, and `naivePLS`).
+* **Articles (Vignettes)**: Step-by-step tutorials, such as the comparison of PLS methods for One-State Categorical Functional Data (CFD).
+* **Getting Started**: Quick installation guide and basic usage.
 
 ---
 
