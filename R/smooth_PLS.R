@@ -493,6 +493,7 @@ orthonormalize_basis_list <- function(basis_list, orth_list, tol=1e-9){
 }
 
 
+
 #### Lambda #####
 
 #' evaluate_lambda
@@ -614,18 +615,8 @@ evaluate_lambda_CFD <- function(df, basis, int_mode = 1,
 
   computational_load <- n_ind * n_col
 
-  # 2. Setup Parallel
-  nb_cores <- if (parallel) max(future::availableCores() - 2, 1) else 1
-
-  # ---  DYNAMIC HEURISTIC ---
-  # estimated 2500 integral evaluation per core
-  base_threshold <- getOption("SmoothPLS.parallel_threshold", default = 2500)
-  threshold_limit <- base_threshold * nb_cores
-
-  if (parallel && computational_load < threshold_limit) {
-    parallel <- FALSE
-    nb_cores <- 1
-  }
+  nb_cores <- get_optimal_cores(parallel = parallel,
+                                computational_load = computational_load)
 
   cat(paste0("nb_core : ", nb_cores))
 
@@ -834,17 +825,8 @@ evaluate_lambda_SFD <- function(df, basis,
   computational_load <- n_ind * n_col
 
   # 2. Setup Parallel
-  nb_cores <- if (parallel) max(future::availableCores() - 2, 1) else 1
-
-  # ---  DYNAMIC HEURISTIC ---
-  # estimated 2500 integral evaluation per core
-  base_threshold <- getOption("SmoothPLS.parallel_threshold", default = 2500)
-  threshold_limit <- base_threshold * nb_cores
-
-  if (parallel && computational_load < threshold_limit) {
-    parallel <- FALSE
-    nb_cores <- 1
-  }
+  nb_cores <- get_optimal_cores(parallel = parallel,
+                                computational_load = computational_load)
 
   if (parallel) {
     old_plan <- future::plan(future::multisession, workers = nb_cores)

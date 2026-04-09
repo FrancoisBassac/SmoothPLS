@@ -1121,3 +1121,37 @@ block_diag <- function(A, B) {
 
   return(result)
 }
+
+
+#### parallel future ####
+
+#' get_optimal_cores
+#' Determine optimal number of cores for parallel processing
+#'
+#' @param parallel boolean, user request for parallelization, default TRUE
+#' @param computational_load numeric, the size of the task
+#'
+#' @returns an integer representing the number of cores to use
+#' @importFrom future availableCores
+#' @noRd
+get_optimal_cores <- function(parallel = TRUE, computational_load) {
+  if (!parallel) {
+    return(1)
+  }
+
+  base_threshold <- getOption("SmoothPLS.parallel_threshold", default = 2500)
+  max_cores <- max(future::availableCores() - 2, 1)
+
+  # 1 coeur pour chaque bloc de 'base_threshold' calculs
+  optimal_cores <- floor(computational_load / base_threshold)
+
+  # On ne dépasse pas la limite de la machine
+  nb_cores <- min(max_cores, optimal_cores)
+
+  # Si le calcul est trop petit, on force le séquentiel (1 coeur)
+  if (nb_cores <= 1) {
+    return(1)
+  }
+
+  return(nb_cores)
+}
