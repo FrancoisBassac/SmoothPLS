@@ -86,12 +86,74 @@ plot(spls_model$reg_obj$CatFD_1_state_1, main="SmoothPLS Regression Curve")
 
 ### 👟 Industrial Partners & Applications
 * **[Decathlon](https://www.decathlon.fr/)** – Main industrial partner.
-* **[Decathlon SportsLab](https://www.decathlon.com/pages/sportslab)** – The research and development center.
+* **[Decathlon SportsLab](https://engagements.decathlon.fr/le-sportslab-notre-labo-danalyse-du-corps-du-ou-de-la-sportif-ve)** – The research and development center.
 * **Kiprun Pacer** – The training application using advanced running data:
-    * [Official Website](https://kiprun.com/pacer/)
-    * [App Store / Play Store](https://kiprun.com/pacer/download)
+    * [Official Website](https://www.kiprun.com/)
+    * [App Store / Play Store](https://pacer.kiprun.com/)
 
 ### 🔬 Research Institutions
 * **[Inria](https://www.inria.fr/)** – National Institute for Research in Digital Science and Technology.
-* **[Inria Dataverse](https://data.inria.fr/)** – The research team specialized in stochastic modeling and data analysis.
-* **[Modal Team](https://www.inria.fr/fr/equipes/modal)**
+* **[Inria Dataverse](https://www.inria.fr/fr/datavers)** – The research team specialized in stochastic modeling and data analysis.
+
+---
+
+## A detailled example : One-State Categorical Functional Data##
+
+This example illustrates how SmoothPLS processes Categorical Functional Data (CFD) by modeling transitions as functional objects. For a deeper dive, see the full comparison Vignette.
+
+1. Data Visualization
+We simulate categorical time series where individuals switch between state 0 and state 1 over time.
+
+### Generate synthetic categorical data
+```R
+library(SmoothPLS)
+
+df_x <- generate_X_df(nind = 100, start = 0, end = 100, curve_type = 'cat')
+
+# Generate response Y linked to the time spent in state 1
+Y_df <- generate_Y_df(df_x, curve_type = 'cat', beta_real_func_or_list = beta_1_real_func)
+```
+
+### Visualize the first 5 individuals
+```R
+plot_CFD_individuals(df_x, by_cfda = TRUE)
+```
+![Figure 1: Synthetic binary state trajectories for 5 individuals.](man/figures/nom_de_l_image.png)
+
+
+2. Model Fitting & Prediction
+We fit the SmoothPLS model to a noised response $Y$ and compare the resulting regression curve $\beta(t)$ with the ground truth.R# Define a B-spline basis
+```R
+basis <- create_bspline_basis(start = 0, end = 100, nbasis = 10)
+```
+
+### Generate response Y linked to the time spent in state 1
+```R
+Y_df <- generate_Y_df(df_x, curve_type = 'cat', 
+                      beta_real_func_or_list = beta_1_real_func)
+```
+
+### Fit the SmoothPLS model
+```R
+spls_obj <- smoothPLS(df_list = df_x, Y = Y_df$Y_noised, 
+                      basis_obj = basis, curve_type_obj = 'cat',
+                      print_steps = FALSE, print_nbComp = FALSE, 
+                      plot_rmsep = FALSE, plot_reg_curves = FALSE)
+```
+
+### Plot the recovered regression curve vs the theoretical one
+```R
+y_lim = eval_max_min_y(f_list = list(beta_real_func, 
+                                     delta), 
+                       regul_time = regul_time_0)
+
+plot(regul_time_0, beta_real_func(regul_time_0), type='l', xlab="Beta_t",
+     ylim = c(-2, 3.5))
+plot(delta, add=TRUE, col='blue')
+legend("topleft",
+         legend = c("delta_SmoothPLS"),
+         col = c("blue"),
+         lty = 1,
+         lwd = 1)
+```
+![Figure 2: The blue curve (SmoothPLS) successfully recovers the underlying red dashed curve (Theoretical Beta).](man/figures/beta_comparison.png)
