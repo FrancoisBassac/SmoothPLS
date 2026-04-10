@@ -44,7 +44,7 @@ the same basis is used for all the curves}
 
 \item{plot_reg_curves}{a boolean to directly plot the beta regression curves}
 
-\item{jackknife}{a plsr input, defautl = TRUE}
+\item{jackknife}{a plsr input, default = TRUE}
 
 \item{validation}{a plsr input, default = 'LOO'}
 }

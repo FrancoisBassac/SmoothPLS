@@ -36,7 +36,7 @@ default 'time'}
 \item{int_mode}{a integer for the integration mode, 1 for integrate, 2 for
 pracma::trapz}
 
-\item{nb_pt}{a integrer, number of intermediate points for pracma::trapz,
+\item{nb_pt}{a integer, number of intermediate points for pracma::trapz,
 default 10}
 
 \item{subdivisions}{a integer, number of subdivision in integrate function,

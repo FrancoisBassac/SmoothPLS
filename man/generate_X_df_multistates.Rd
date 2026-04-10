@@ -25,12 +25,12 @@ generate_X_df_multistates(
 
 \item{lambdas}{a vector of N_states lambda values from lambda_determination(N_states)}
 
-\item{transition_df}{a dataframe with the transition matrix from tranfert_probabilities(N_states)}
+\item{transition_df}{a dataframe with the transition matrix from transfer_probabilities(N_states)}
 
 \item{seed}{a integer, random seed}
 }
 \value{
-a dataframe of a multistates Categorical Funcitonal Data
+a dataframe of a multistates Categorical Functional Data
 }
 \description{
 This function generates a multistates CFD.
@@ -38,7 +38,7 @@ This function generates a multistates CFD.
 \examples{
 N_states = 4
 lambdas = lambda_determination(N_states)
-transition_df = transfert_probabilities(N_states)
+transition_df = transfer_probabilities(N_states)
 
 df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 lambdas,  transition_df)

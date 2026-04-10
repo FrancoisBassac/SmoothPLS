@@ -15,7 +15,7 @@ lambda_determination(N_states, lambda_values = c(0.05, 0.25))
 a numeric vector with the lambda values
 }
 \description{
-This function determines a nomber of lambda parameters for exponantial laws.
+This function determines a number of lambda parameters for exponential laws.
 }
 \examples{
 lambda_determination(3)

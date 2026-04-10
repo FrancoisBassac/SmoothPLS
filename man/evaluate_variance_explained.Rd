@@ -9,7 +9,7 @@ evaluate_variance_explained(Y, Y_hat)
 \arguments{
 \item{Y}{a reference value}
 
-\item{Y_hat}{a modelized value Y_hat = model(X)}
+\item{Y_hat}{a modeled value Y_hat = model(X)}
 }
 \value{
 a value in \%

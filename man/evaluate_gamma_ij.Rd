@@ -16,7 +16,7 @@ a list of list of the gamma_ij values
 }
 \description{
 This function evaluates int_0^T w_i_fd p_j_t dt for all j
-return a list, i^th element length is (i-1)
+return a list, the element i length is (i-1)
 }
 \author{
 Francois Bassac

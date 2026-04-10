@@ -18,7 +18,7 @@ a value
 }
 \description{
 Constant function = 1
-Can adjuste the constant value by drop input
+Can adjust the constant value by drop input
 }
 \examples{
 beta_5_real_func(0)

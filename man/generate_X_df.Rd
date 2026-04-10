@@ -33,7 +33,7 @@ generate_X_df(
 
 \item{noise_sd}{noise added to the signal, default 0.1}
 
-\item{seed}{seed for reproductability, default 123}
+\item{seed}{seed for reproducibility, default 123}
 }
 \value{
 the dataframe of the individuals
@@ -42,7 +42,7 @@ the dataframe of the individuals
 This function generate synthetic data of nind X(t).
 For 'cat' curve_type it is in state 0 or 1 by two
 different exponential laws.
-For curve_type = 'num' it is noised cosinus.
+For curve_type = 'num' it is noised cosine.
 }
 \examples{
 generate_X_df()

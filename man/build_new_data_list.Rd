@@ -20,7 +20,7 @@ build_new_data_list(
 
 \item{N_curves}{a integer, the number of curves}
 
-\item{orth_basis_list}{a list of orthogonolized basis fd list}
+\item{orth_basis_list}{a list of orthogonalized basis fd list}
 
 \item{basis_list}{a list of basis fd functions}
 

@@ -36,7 +36,7 @@ naivePLS(
 
 \item{plot_rmsep}{a boolean to plot the RMSEP, default TRUE}
 
-\item{print_nbComp}{a boolean to print the optimal number od components,
+\item{print_nbComp}{a boolean to print the optimal number or components,
 default TRUE}
 
 \item{plot_reg_curves}{a boolean to plot the regression curves, default

@@ -17,7 +17,7 @@ from_fd_to_func(fd_obj = NULL, coef = NULL, basisobj = NULL)
 a function
 }
 \description{
-This funciton transform a fd object into a function.
+This function transform a fd object into a function.
 It require either the fd object OR the coefficient and the basis object.
 }
 \examples{

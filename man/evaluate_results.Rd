@@ -11,7 +11,7 @@ evaluate_results(Y, Y_hat)
 \arguments{
 \item{Y}{a vector of real values}
 
-\item{Y_hat}{a vector of modelized values}
+\item{Y_hat}{a vector of modeled values}
 }
 \value{
 a dataframe

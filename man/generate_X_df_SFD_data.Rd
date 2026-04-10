@@ -21,13 +21,13 @@ generate_X_df_SFD_data(
 
 \item{noise_sd}{noise added to the signal, default 0.1}
 
-\item{seed}{seed for reproductability, default 123}
+\item{seed}{seed for reproducibility, default 123}
 }
 \value{
 a dataframe
 }
 \description{
-This function generate test data of nind X which are noised cosinuses.
+This function generate test data of nind X which are noised cosines.
 }
 \examples{
 generate_X_df_SFD(nind = 100, start = 0, end = 100,

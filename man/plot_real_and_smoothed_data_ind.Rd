@@ -32,11 +32,11 @@ plot_real_and_smoothed_data_ind
 \examples{
 N_states = 3
 lambdas = lambda_determination(N_states)
-transition_df = transfert_probabilities(N_states)
+transition_df = transfer_probabilities(N_states)
 
 df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 lambdas,  transition_df)
-df_processed = cat_data_to_indicatrice(df)
+df_processed = cat_data_to_indicator(df)
 
 df_regul = list()
 df_wide = list()

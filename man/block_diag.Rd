@@ -15,7 +15,7 @@ block_diag(A, B)
 a matrix
 }
 \description{
-returns a matrix whoses blocks are A and B.
+returns a matrix whose blocks are A and B.
 returns :
 ( A, 0 )
 ( 0, B )

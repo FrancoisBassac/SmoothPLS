@@ -4,100 +4,68 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>synthetic_data_00 • SmoothPLS</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="synthetic_data_00">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="synthetic_data_00">
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">SmoothPLS</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
-      </span>
-    </div>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
+    <a class="navbar-brand me-2" href="../index.html">SmoothPLS</a>
 
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/s00_synthetic_data.html">synthetic_data_00</a>
-    </li>
-    <li>
-      <a href="../articles/s01_CFD_one_state.html">comparaison_one_state_02</a>
-    </li>
-    <li>
-      <a href="../articles/s02_SFD.html">smoothPLS_ScalarFD_04</a>
-    </li>
-    <li>
-      <a href="../articles/s03_CFD_multistates.html">smoothPLS_multi_states_05</a>
-    </li>
-    <li>
-      <a href="../articles/s04_Multivariate.html">multivariate_smoothPLS_07</a>
-    </li>
-    <li>
-      <a href="../articles/s05_lim_fpls_smoothPLS.html">lim_fpls_smoothPLS_03</a>
-    </li>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/s00_synthetic_data.html">synthetic_data_00</a></li>
+    <li><a class="dropdown-item" href="../articles/s01_CFD_one_state.html">comparison_one_state_02</a></li>
+    <li><a class="dropdown-item" href="../articles/s02_SFD.html">smoothPLS_ScalarFD_04</a></li>
+    <li><a class="dropdown-item" href="../articles/s03_CFD_multistates.html">smoothPLS_multi_states_05</a></li>
+    <li><a class="dropdown-item" href="../articles/s04_Multivariate.html">multivariate_smoothPLS_07</a></li>
+    <li><a class="dropdown-item" href="../articles/s05_lim_fpls_smoothPLS.html">lim_fpls_smoothPLS_03</a></li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/FrancoisBassac/SmoothPLS/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/FrancoisBassac/SmoothPLS/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
+</nav><div class="container template-article">
 
 
 
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>synthetic_data_00</h1>
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+
+      <h1>synthetic_data_00</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/FrancoisBassac/SmoothPLS/blob/HEAD/vignettes/s00_synthetic_data.Rmd" class="external-link"><code>vignettes/s00_synthetic_data.Rmd</code></a></small>
-      <div class="hidden name"><code>s00_synthetic_data.Rmd</code></div>
-
+      <div class="d-none name"><code>s00_synthetic_data.Rmd</code></div>
     </div>
 
     
@@ -173,7 +141,7 @@ is a Scalar Functional Data.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">func</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span><span class="op">{</span><span class="fl">0.01</span><span class="op">*</span><span class="va">t</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="va">t</span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">40</span>, <span class="fu">func</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-4-1.png" alt="Decay plot" width="700"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/evaluate_id_func_integral.html">evaluate_id_func_integral</a></span><span class="op">(</span><span class="va">id_df</span>, <span class="va">func</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id  integral</span></span>
@@ -257,7 +225,7 @@ will be used to easier the integral calculation inside the PLS.</p>
 <p>Here if the fd object :</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fd_obj</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-10-1.png" alt="fd object" width="700"></p>
 <pre><code><span><span class="co">#&gt; [1] "done"</span></span></code></pre>
 <p>Now we can evaluate, we should find the same values :</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -272,7 +240,7 @@ will be used to easier the integral calculation inside the PLS.</p>
 <p>This package provides some function to create some synthetic data.
 These data are individuals with state 0 or 1. The state law are
 exponential laws.</p>
-<p>One important imput is : typa = ‘cat’.</p>
+<p>One important input is : type = ‘cat’.</p>
 <div class="section level3">
 <h3 id="generate_x_df">generate_X_df<a class="anchor" aria-label="anchor" href="#generate_x_df"></a>
 </h3>
@@ -307,10 +275,10 @@ notebook.</p>
 dataframe.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_CFD_individuals.html">plot_CFD_individuals</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-14-1.png" alt="Binary CFD individuals" width="700"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_CFD_individuals.html">plot_CFD_individuals</a></span><span class="op">(</span><span class="va">df_2</span>, n_ind_to_plot <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-15-1.png" alt="3 binary CFD individuals" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="create-df-test">Create df test<a class="anchor" aria-label="anchor" href="#create-df-test"></a>
@@ -352,37 +320,37 @@ by the following equation :
 </h4>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, y<span class="op">=</span><span class="fu"><a href="../reference/beta_1_real_func.html">beta_1_real_func</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'l'</span>, main<span class="op">=</span><span class="st">"Beta_1"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-18-1.png" alt="beta_1_real_func" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="beta_2_real_func">beta_2_real_func<a class="anchor" aria-label="anchor" href="#beta_2_real_func"></a>
 </h4>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, y<span class="op">=</span><span class="fu"><a href="../reference/beta_2_real_func.html">beta_2_real_func</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'l'</span>, main<span class="op">=</span><span class="st">"Beta_2"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-19-1.png" alt="beta_2_real_func" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="beta_3_real_func">beta_3_real_func<a class="anchor" aria-label="anchor" href="#beta_3_real_func"></a>
 </h4>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, y<span class="op">=</span><span class="fu"><a href="../reference/beta_3_real_func.html">beta_3_real_func</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'l'</span>, main<span class="op">=</span><span class="st">"Beta_3"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-20-1.png" alt="beta_3_real_func" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="other-beta-functions">Other beta functions<a class="anchor" aria-label="anchor" href="#other-beta-functions"></a>
 </h4>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, y<span class="op">=</span><span class="fu"><a href="../reference/beta_4_real_func.html">beta_4_real_func</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'l'</span>, main<span class="op">=</span><span class="st">"Beta_4"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-1.png" alt="Other beta functions" width="700"></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, y<span class="op">=</span><span class="fu"><a href="../reference/beta_5_real_func.html">beta_5_real_func</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'l'</span>, main<span class="op">=</span><span class="st">"Beta_5"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-2.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-2.png" alt="Other beta functions" width="700"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, y<span class="op">=</span><span class="fu"><a href="../reference/beta_6_real_func.html">beta_6_real_func</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'l'</span>, main<span class="op">=</span><span class="st">"Beta_6"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-3.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-3.png" alt="Other beta functions" width="700"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, y<span class="op">=</span><span class="fu"><a href="../reference/beta_7_real_func.html">beta_7_real_func</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'l'</span>, main<span class="op">=</span><span class="st">"Beta_7"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-4.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-21-4.png" alt="Other beta functions" width="700"></p>
 </div>
 </div>
 <div class="section level3">
@@ -425,7 +393,7 @@ of the total variance due to some gaussian noise.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">Y_df</span><span class="op">$</span><span class="va">Y_real</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">Y_df</span><span class="op">$</span><span class="va">Y_noised</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-25-1.png" alt="Y_df real and noised value histograms" width="700"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We can generate Y_df_test the same way by simply changing df to
@@ -473,7 +441,7 @@ the signal and the seed for repeatability.</p>
 <span>       x <span class="op">=</span> <span class="st">"Time"</span>, y <span class="op">=</span> <span class="st">"Value"</span>,</span>
 <span>       color <span class="op">=</span> <span class="st">"Individual"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-28-1.png" alt="Noised cosinus curves" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="generate_y_df-1">generate_Y_df<a class="anchor" aria-label="anchor" href="#generate_y_df-1"></a>
@@ -1587,7 +1555,7 @@ the signal and the seed for repeatability.</p>
 <span><span class="co">#&gt; [1] 0.1699978 0.1165647 0.1477226 0.2408948</span></span></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Initialized the transition matrix</span></span>
-<span><span class="va">transition_df</span> <span class="op">=</span> <span class="fu"><a href="../reference/transfert_probabilities.html">transfert_probabilities</a></span><span class="op">(</span><span class="va">N_states</span><span class="op">)</span></span>
+<span><span class="va">transition_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SmoothPLS/man/transfert_probabilities.html" class="external-link">transfert_probabilities</a></span><span class="op">(</span><span class="va">N_states</span><span class="op">)</span></span>
 <span><span class="va">transition_df</span></span>
 <span><span class="co">#&gt;               dir1      dir2      dir3       dir4</span></span>
 <span><span class="co">#&gt; state_1 0.00000000 0.3860865 0.5865265 0.02738700</span></span>
@@ -1611,7 +1579,7 @@ the signal and the seed for repeatability.</p>
 <p>We can plot some individuals with the plot_individual() function.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_CFD_individuals.html">plot_CFD_individuals</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-36-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-36-1.png" alt="Multistates individuals" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="plotdata">plotData<a class="anchor" aria-label="anchor" href="#plotdata"></a>
@@ -1620,7 +1588,7 @@ the signal and the seed for repeatability.</p>
 analysis on the data.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">cfda</span><span class="fu">::</span><span class="fu"><a href="https://modal-inria.github.io/cfda/reference/plotData.html" class="external-link">plotData</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-37-1.png" width="700">
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-37-1.png" alt="Multistates individuals plot by cfda" width="700">
 ## estimate_pt We can still use the CFDA package to estimate the
 probabilities :</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
@@ -1628,10 +1596,10 @@ probabilities :</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">proba</span>, ribbon <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-39-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-39-1.png" alt="Marginal probabilities" width="700"></p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">proba</span>, ribbon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-39-2.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-39-2.png" alt="Marginal probabilities" width="700"></p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1675,7 +1643,7 @@ state.</p>
 <p><em>Now for the different lists, the [[i]] element of a list concern
 the [[i]] states ordered.</em></p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">si_df</span> <span class="op">=</span> <span class="fu"><a href="../reference/state_indicatrices.html">state_indicatrices</a></span><span class="op">(</span><span class="va">df</span>, id_col<span class="op">=</span><span class="st">'id'</span>, time_col<span class="op">=</span><span class="st">'time'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">si_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SmoothPLS/man/state_indicatrices.html" class="external-link">state_indicatrices</a></span><span class="op">(</span><span class="va">df</span>, id_col<span class="op">=</span><span class="st">'id'</span>, time_col<span class="op">=</span><span class="st">'time'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">si_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "id"      "time"    "state_1" "state_2" "state_3" "state_4"</span></span></code></pre></div>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
@@ -1726,7 +1694,7 @@ with the function <em>remove_duplicate_states()</em>.</p>
 <span><span class="co">#&gt; [1] "list"</span></span></code></pre></div>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_CFD_individuals.html">plot_CFD_individuals</a></span><span class="op">(</span><span class="va">states_df</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-47-1.png" width="700"></p>
+<p><img src="s00_synthetic_data_files/figure-html/unnamed-chunk-47-1.png" alt="Indicator function per state" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="cat_data_to_indicatrice">cat_data_to_indicatrice<a class="anchor" aria-label="anchor" href="#cat_data_to_indicatrice"></a>
@@ -1735,7 +1703,7 @@ with the function <em>remove_duplicate_states()</em>.</p>
 data with different states to a list of one dataframe per state
 indicatrice whose duplicated states where removed</p>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_list</span> <span class="op">=</span> <span class="fu"><a href="../reference/cat_data_to_indicatrice.html">cat_data_to_indicatrice</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">df_list</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SmoothPLS/man/cat_data_to_indicatrice.html" class="external-link">cat_data_to_indicatrice</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df_list</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "state_1" "state_2" "state_3" "state_4"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_list</span><span class="op">$</span><span class="va">state_1</span><span class="op">)</span></span>
@@ -1750,29 +1718,22 @@ indicatrice whose duplicated states where removed</p>
 Smooth PLS or the FPLS.</p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-      </div>
-
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Francois Bassac.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Francois Bassac.</p>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
-
 
 
 

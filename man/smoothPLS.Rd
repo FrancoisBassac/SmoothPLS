@@ -32,7 +32,7 @@ smoothPLS(
 
 \item{regul_time_obj}{a vector for time regularization values or a list}
 
-\item{curve_type_obj}{a list or vector of the differents curves types,
+\item{curve_type_obj}{a list or vector of the different curves types,
 'cat' or 'num.}
 
 \item{orth_obj}{a list or a vector of booleans if the orthonormalization
@@ -66,11 +66,11 @@ a list of the plsr_model and the regression curves (and intercept).
 }
 \description{
 This function performs the smooth PLS algorithm for both the univariate case
-for a Scalar Functionnal Data or a Categorical Functional Data and the
+for a Scalar Functional Data or a Categorical Functional Data and the
 multivariate case for a mix of functional data of different nature
 (SFD or CFD).
 For some input, if the same value is needed for all the different curves,
-no need to make a list sith the value per curve.
+no need to make a list with the value per curve.
 }
 \author{
 Francois Bassac

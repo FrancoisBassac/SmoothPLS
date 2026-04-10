@@ -18,7 +18,7 @@ gram_schmidt_orthonormalize(basis, output_type = "fdlist", tol = 1e-12)
 A list of orthonormalized functions fd or func(t)
 }
 \description{
-Orthonormalizer a basis functions with Gram-Schmidt algorithm.
+Orthonormalize a basis functions with Gram-Schmidt algorithm.
 }
 \examples{
 

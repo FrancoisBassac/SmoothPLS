@@ -27,7 +27,7 @@ generate_X_df_CFD(
 
 \item{prob_start}{Start state 1 probability, binomial law, default 0.5}
 
-\item{seed}{a integer, rabdom seed 123}
+\item{seed}{a integer, random seed 123}
 }
 \value{
 the dataframe of the individuals

@@ -7,29 +7,29 @@
 split_in_state_df(data, id_col = "id", time_col = "time")
 }
 \arguments{
-\item{data}{a dataframe cotaining the indicatrices, output of state_indicatrices()}
+\item{data}{a dataframe containing the indicator functions, output of state_indicator()}
 
 \item{id_col}{a character for the id column, default 'id'}
 
 \item{time_col}{a character for the time column, default 'time'}
 }
 \value{
-a list containing the dataframe of the indicatrice of each state.
+a list containing the dataframe of the indicator function of each state.
 }
 \description{
-This function transform a categorical functional data with its indicatrices
+This function transform a categorical functional data with its indicator functions
 into a dedicated list of all the state (one per different state)
 This function will also work with character states.
 }
 \examples{
 N_states = 3
 lambdas = lambda_determination(N_states)
-transition_df = transfert_probabilities(N_states)
+transition_df = transfer_probabilities(N_states)
 
 df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 lambdas, transition_df)
 
-si_df = state_indicatrices(df, id_col='id',
+si_df = state_indicator(df, id_col='id',
 time_col='time')
 
 split_df = split_in_state_df(si_df, id_col='id', time_col='time')

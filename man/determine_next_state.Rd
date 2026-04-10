@@ -9,7 +9,7 @@ determine_next_state(current_state, transition_df)
 \arguments{
 \item{current_state}{a value of the current state}
 
-\item{transition_df}{a dataframe of the transistion matrix}
+\item{transition_df}{a dataframe of the transition matrix}
 }
 \value{
 a value for the next state
@@ -21,7 +21,7 @@ the transition matrix.
 \examples{
 N_states = 3
 lambdas = lambda_determination(N_states)
-transition_df = transfert_probabilities(N_states)
+transition_df = transfer_probabilities(N_states)
 determine_next_state(1, transition_df)
 
 }

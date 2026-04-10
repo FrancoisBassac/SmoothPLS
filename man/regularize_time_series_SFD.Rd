@@ -24,7 +24,7 @@ regularize_time_series_SFD(
 a regularized dataframe
 }
 \description{
-This function regularizz a Scalar Functional Data SFD on the time_seq input.
+This function regularizes a Scalar Functional Data SFD on the time_seq input.
 This function uses linear interpolation.
 }
 \author{

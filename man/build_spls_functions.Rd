@@ -24,7 +24,7 @@ all curves}
 plsr_model$loadings}
 
 \item{u_i}{the pls coefficient such as t_i = X u_i :
-plsr_model$loading.weigths}
+plsr_model$loading.weights}
 }
 \value{
 a list Lambda = sum d_i t_i

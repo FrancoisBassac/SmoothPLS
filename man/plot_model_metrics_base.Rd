@@ -19,14 +19,14 @@ plot_model_metrics_base(
 \item{models_to_plot}{a list of characters of the models to plot, default
 c("FPLS", "SmoothPLS", "NaivePLS")}
 
-\item{n_digits}{a integer for the number of significative numbers to print,
+\item{n_digits}{a integer for the number of significant numbers to print,
 default 3}
 }
 \value{
 a plot
 }
 \description{
-This funciton plots some histograms for train_results and test_results
+This function plots some histograms for train_results and test_results
 }
 \author{
 Francois Bassac

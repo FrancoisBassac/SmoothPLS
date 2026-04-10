@@ -36,7 +36,7 @@ and the new_basis_list
 \description{
 This function builds the alphas matrix by columns binding the alpha of each
 curve.
-It returne the alphas matrix and a vector containing all the curves names.
+It returns the alphas matrix and a vector containing all the curves names.
 }
 \author{
 Francois Bassac

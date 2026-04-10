@@ -47,7 +47,7 @@ a matrix \eqn{\Lambda_i = \int_0^T X(t) \phi_i(t) dt}
 This function evaluates the Lambda matrix such as per column :
 Lambda_i = int_0^T X(t) phi_i(t) dt.
 The curve_type input is important function of the type of data you work with
-'cat' for Categorical Funcitonal Data
+'cat' for Categorical Functional Data
 'num' for Scalar Functional Data
 }
 \examples{

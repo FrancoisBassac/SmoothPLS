@@ -30,7 +30,7 @@ p_w_building(
 a list of fd objects
 }
 \description{
-This functions evalutates the p_i(t) (X_i regression functions) and w_i(t)
+This functions evaluates the p_i(t) (X_i regression functions) and w_i(t)
 such as \eqn{t_i = \int_0^T w_i(t)X_{i-1}(t) dt}.
 The evaluation is done for all the components.
 }

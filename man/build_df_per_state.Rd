@@ -7,14 +7,14 @@
 build_df_per_state(data_list, id_col = "id", time_col = "time")
 }
 \arguments{
-\item{data_list}{a list containing the dataframe of the indicatrice of each state.}
+\item{data_list}{a list containing the dataframe of the indicator function of each state.}
 
 \item{id_col}{a character for the id column, default 'id'}
 
 \item{time_col}{a character for the time column, default 'time'}
 }
 \value{
-a list of the ordered states in the indicatrice form.
+a list of the ordered states in the indicator function form.
 }
 \description{
 build_df_per_state
@@ -22,12 +22,12 @@ build_df_per_state
 \examples{
 N_states = 3
 lambdas = lambda_determination(N_states)
-transition_df = transfert_probabilities(N_states)
+transition_df = transfer_probabilities(N_states)
 
 df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 lambdas, transition_df)
 
-si_df = state_indicatrices(df, id_col='id',
+si_df = state_indicator(df, id_col='id',
 time_col='time')
 
 split_df = split_in_state_df(si_df, id_col='id', time_col='time')

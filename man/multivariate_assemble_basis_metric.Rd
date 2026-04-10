@@ -29,7 +29,7 @@ a matrix of the metric to consider
 \description{
 This function assemble the metrics of all the basis of the basis list for
 multivariate use case.
-It take care on the categorical case by de-multiplying the basis per state.
+It take care on the categorical case by multiplying the basis per state.
 }
 \author{
 Francois Bassac

@@ -7,7 +7,7 @@
 determine_curve_name(curve_number, curve_type = NULL, states_names = NULL)
 }
 \arguments{
-\item{curve_number}{a int, the place of the vurve in the data}
+\item{curve_number}{a int, the place of the curve in the data}
 
 \item{curve_type}{a character, 'cat' or 'num'}
 

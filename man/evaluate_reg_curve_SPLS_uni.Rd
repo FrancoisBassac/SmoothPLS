@@ -2,7 +2,7 @@
 % Please edit documentation in R/smooth_PLS.R
 \name{evaluate_reg_curve_SPLS_uni}
 \alias{evaluate_reg_curve_SPLS_uni}
-\title{evaluate_delta_PLS}
+\title{evaluate_reg_curve_SPLS_uni}
 \usage{
 evaluate_reg_curve_SPLS_uni(plsr_model, v_i_list, nb_comp = NULL)
 }
@@ -19,7 +19,7 @@ if NULL, then delta(t) will take every components available.}
 a fd function
 }
 \description{
-This functions evalutates the regression function such as :
+This functions evaluates the regression function such as :
 \eqn{Y = \int_0^T delta(t) X(t) dt}.
 }
 \author{

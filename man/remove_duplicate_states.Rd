@@ -23,7 +23,7 @@ this function works both with (0,1) or categorical states on the state_col!
 \examples{
 N_states = 3
 lambdas = lambda_determination(N_states)
-transition_df = transfert_probabilities(N_states)
+transition_df = transfer_probabilities(N_states)
 
 df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 lambdas, transition_df)
