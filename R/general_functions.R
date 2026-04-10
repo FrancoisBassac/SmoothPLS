@@ -997,22 +997,17 @@ plot_model_metrics_base <- function(train_results, test_results,
     metric_data <- long_results[long_results$Metric == metric, ]
 
     p <- ggplot(metric_data, aes(x = .data$Model,
-                                 y = .data$Value, fill = .data$Set)) +
+                                 y = .data$Value,
+                                 fill = .data$Set)) +
       geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
-      geom_text(aes(label = .data$Label),
+      geom_text(aes(label = .data$Label), # Ici aussi
                 position = position_dodge(width = 0.9),
-                vjust = -0.3, size = 3) +
+                vjust = -0.3, size = 3)+
       labs(title = paste("Comparison", metric, "per model"),
            y = metric, x = "Model") +
       scale_fill_manual(values = c("Train" = "#1b9e77", "Test" = "#d95f02")) +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5))
-
-    p <- ggplot(metric_data, aes(x = .data$Model, y = .data$Value, fill = .data$Set)) +
-      geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
-      geom_text(aes(label = .data$Label), # Ici aussi
-                position = position_dodge(width = 0.9),
-                vjust = -0.3, size = 3)
 
     print(p)
   }
@@ -1120,4 +1115,38 @@ block_diag <- function(A, B) {
   result[(n1 + 1):(n1 + n2), (m1 + 1):(m1 + m2)] <- B
 
   return(result)
+}
+
+
+#### parallel future ####
+
+#' get_optimal_cores
+#' Determine optimal number of cores for parallel processing
+#'
+#' @param parallel boolean, user request for parallelization, default TRUE
+#' @param computational_load numeric, the size of the task
+#'
+#' @returns an integer representing the number of cores to use
+#' @importFrom future availableCores
+#' @noRd
+get_optimal_cores <- function(parallel = TRUE, computational_load) {
+  if (!parallel) {
+    return(1)
+  }
+
+  base_threshold <- getOption("SmoothPLS.parallel_threshold", default = 2500)
+  max_cores <- max(future::availableCores() - 2, 1)
+
+  # 1 coeur pour chaque bloc de 'base_threshold' calculs
+  optimal_cores <- floor(computational_load / base_threshold)
+
+  # On ne dépasse pas la limite de la machine
+  nb_cores <- min(max_cores, optimal_cores)
+
+  # Si le calcul est trop petit, on force le séquentiel (1 coeur)
+  if (nb_cores <= 1) {
+    return(1)
+  }
+
+  return(nb_cores)
 }

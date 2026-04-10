@@ -1,8 +1,8 @@
 Package: SmoothPLS
 Type: Package
 Title: SmoothPLS algorithm for Categorical and Scalar Functional Data 
-Version: 0.1.3
-Date: 2026-04-08
+Version: 0.1.4
+Date: 2026-04-10
 Authors@R: c(
     person(
       "Francois", "Bassac",
@@ -45,5 +45,7 @@ Imports:
     tidyr (>= 1.3.1),
     utils (>= 4.4.1),
     rlang (>= 1.1.0),
-    magrittr (>= 2.0.3)
+    magrittr (>= 2.0.3),
+    future.apply,
+    future
 Config/testthat/edition: 3
