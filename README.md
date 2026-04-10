@@ -1,9 +1,10 @@
-# SmoothPLS <img src="man/figures/logo.png" align="right" height="139" />
+# SmoothPLS
+<img src="man/figures/logo.png" align="right" height="139" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/FrancoisBassac/SmoothPLS/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/FrancoisBassac/SmoothPLS/actions/workflows/R-CMD-check.yaml)
 [![GitHub Release](https://img.shields.io/github/v/release/FrancoisBassac/SmoothPLS?label=version&color=blue)](https://github.com/FrancoisBassac/SmoothPLS/releases)
-[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Lifecycle:stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://FrancoisBassac.github.io/SmoothPLS/)
 ![Downloads](https://img.shields.io/github/downloads/FrancoisBassac/SmoothPLS/total.svg)
@@ -12,7 +13,7 @@
 
 ## Overview
 
-**SmoothPLS** is an R package designed for **Hybrid Functional Data Analysis**. It implements a novel approach to Functional Partial Least Squares (FPLS) by integrating categorical functional predictors through the concept of **"Active Area Integration"**.
+**SmoothPLS** is an R package designed for **Hybrid Functional Data Analysis**. It implements a novel approach to Functional Partial Least Squares (FPLS) by integrating categorical functional predictors through the concept of **Active Area Integration**.
 
 This work was developed as part of a PhD project at **[DECATHLON](https://www.decathlon.fr/)** in collaboration with **[INRIA](https://www.inria.fr/)**.
 
@@ -20,7 +21,7 @@ This work was developed as part of a PhD project at **[DECATHLON](https://www.de
 - **Smooth PLS**: Integration of categorical states as indicator functions for smoother regression curves.
 - **Hybrid Data**: Seamlessly handle both Scalar Functional Data (SFD) and Categorical Functional Data (CFD).
 - **Interpretability**: Provides regression curves $\beta$ even for discrete state changes.
-- **Comparison Suite**: Built-in functions to compare results with Naive (discretized) PLS and Standard Functional PLS.
+- **Comparison Suite**: Built-in functions to compare results with Naive (discretized) PLS and Standard **Functional PLS**.
 
 ---
 

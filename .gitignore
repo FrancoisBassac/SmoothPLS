@@ -9,3 +9,6 @@ devtools.history.R
 .quarto
 test.R
 inst/doc
+.pdf
+docpdf
+logo
