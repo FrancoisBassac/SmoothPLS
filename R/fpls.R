@@ -17,7 +17,7 @@
 #' @param plot_rmsep a boolean to plot the plsr RMSEP
 #' @param print_nbComp a boolean to cat the optimal number of components
 #' @param plot_reg_curves a boolean to directly plot the beta regression curves
-#' @param jackknife a plsr input, defautl = TRUE
+#' @param jackknife a plsr input, default = TRUE
 #' @param validation a plsr input, default = 'LOO'
 #'
 #' @returns a list ("curve_names", "alphas", "metric", "root_metric",
@@ -331,7 +331,7 @@ assert_funcPLS_inputs <- function(df_list, Y, basis_obj,
 #'
 #' This function builds the alphas matrix by columns binding the alpha of each
 #' curve.
-#' It returne the alphas matrix and a vector containing all the curves names.
+#' It returns the alphas matrix and a vector containing all the curves names.
 #'
 #' @param df_list a list of data frame (id, time, state_or_value)
 #' @param basis_list a list of basis
@@ -366,7 +366,7 @@ multivariate_alpha_building <- function(df_list, basis_list,
 
       if(all(states_names %in% c(0, 1)) ||
          all(states_names %in% c('0', '1')) ){
-        # case : one state CFD in indicatrice form
+        # case : one state CFD in indicator form
         states_names = paste0(state_col, "_1")
       }
 
@@ -452,7 +452,7 @@ univariate_alpha_building <- function(df, basis, curve_type = NULL, regul_time,
 
     if(all(states[[state_col]] %in% c(0, 1)) ||
        all(states[[state_col]] %in% c('0', '1')) ){
-      # case : one state CFD in indicatrice form
+      # case : one state CFD in indicator form
 
       df_processed = list(df)
       names(df_processed) = paste0(state_col, "_1")
@@ -462,7 +462,7 @@ univariate_alpha_building <- function(df, basis, curve_type = NULL, regul_time,
       # case : multistates CFD
       N_states = length(unique(df[[state_col]]))
 
-      df_processed = cat_data_to_indicatrice(df,
+      df_processed = cat_data_to_indicator(df,
                                              id_col = id_col,
                                              time_col = time_col)
     }
@@ -507,7 +507,7 @@ univariate_alpha_building <- function(df, basis, curve_type = NULL, regul_time,
 #' This function determines the curves names bases on its place in the data and
 #' its states if it is a categorical functional data.
 #'
-#' @param curve_number a int, the place of the vurve in the data
+#' @param curve_number a int, the place of the curve in the data
 #' @param curve_type a character, 'cat' or 'num'
 #' @param states_names a character or list of character with the states of the CFD
 #'
@@ -585,7 +585,7 @@ multivariate_assemble_basis_metric <- function(df_list, basis_list, curve_list,
 
       if(all(states_names %in% c(0, 1)) ||
          all(states_names %in% c('0', '1')) ){
-        # case : one state CFD in indicatrice form
+        # case : one state CFD in indicator form
         N_states = 1
 
       } else{

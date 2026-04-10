@@ -122,7 +122,7 @@ fda::eval.fd(fd_obj, 13)
 
 This package provides some function to create some synthetic data. These data are individuals with state 0 or 1. The state law are exponential laws.
 
-One important imput is : typa = 'cat'.
+One important input is : type = 'cat'.
 
 ## generate_X_df
 

@@ -106,7 +106,7 @@ beta_5_real_func <- function(t, end_time=100, drop=3*100/5){
 #' beta_6_real_func
 #'
 #' Constant function = 1
-#' Can adjuste the constant value by drop input
+#' Can adjust the constant value by drop input
 #'
 #' @param t evaluation time
 #' @param end_time end time; default 100
@@ -169,7 +169,7 @@ beta_list_generation <- function(N_states=3){
   # beta_1_real_func, beta_2_real_func, beta_3_real_func
 
   if(N_states > 7){
-    stop('beta_list_generation () can not generate more than 7 differents functions')
+    stop('beta_list_generation () can not generate more than 7 different functions')
   }
 
   beta_list = list(beta_1_real_func, beta_2_real_func, beta_3_real_func,
@@ -359,7 +359,7 @@ number_of_test_id <- function(TTRatio = 0.2, nind=100){
 #' @param lambda_0 lambda parameter for exponential law for state 0, default 0.2
 #' @param lambda_1 lambda parameter for exponential law for state 1, default 0.1
 #' @param prob_start Start state 1 probability, binomial law, default 0.5
-#' @param seed a integer, rabdom seed 123
+#' @param seed a integer, random seed 123
 #'
 #' @returns the dataframe of the individuals
 #' @export
@@ -872,7 +872,7 @@ regularize_time_series_CFD <- function(df, time_seq = 0:100,
 
 #' regularize_time_series_SFD
 #'
-#' This function regularizz a Scalar Functional Data SFD on the time_seq input.
+#' This function regularizes a Scalar Functional Data SFD on the time_seq input.
 #' This function uses linear interpolation.
 #'
 #' @param df dataframe with one or more different ids
@@ -965,7 +965,7 @@ convert_to_wide_format <- function(df_new, id_col='id', time_col='time') {
 
 #' lambda_determination
 #'
-#' This function determines a nomber of lambda parameters for exponantial laws.
+#' This function determines a number of lambda parameters for exponential laws.
 #'
 #' @param N_states a int the number of states
 #' @param lambda_values a vector of min and max values authorized for lambda
@@ -1091,7 +1091,7 @@ initial_state_determination <- function(N_states){
 #' the transition matrix.
 #'
 #' @param current_state a value of the current state
-#' @param transition_df a dataframe of the transistion matrix
+#' @param transition_df a dataframe of the transition matrix
 #'
 #' @returns a value for the next state
 #' @export
@@ -1135,10 +1135,10 @@ determine_next_state <- function(current_state, transition_df){
 #' @param start a value of starting time, default 0
 #' @param end a value of ending time, default 100
 #' @param lambdas a vector of N_states lambda values from lambda_determination(N_states)
-#' @param transition_df a dataframe with the transition matrix from tranfert_probabilities(N_states)
+#' @param transition_df a dataframe with the transition matrix from transfert_probabilities(N_states)
 #' @param seed a integer, random seed
 #'
-#' @returns a dataframe of a multistates Categorical Funcitonal Data
+#' @returns a dataframe of a multistates Categorical Functional Data
 #' @export
 #'
 #' @importFrom stats rexp
@@ -1199,10 +1199,10 @@ generate_X_df_multistates <- function(nind = 100, N_states=3, start=0, end=100,
 
 #### Data transformation ####
 
-#' state_indicatrices
+#' state_indicator
 #'
-#' This function takes functional categorical curve as input and tranform it
-#' into as many indicatrices curves as the number of state input
+#' This function takes functional categorical curve as input and transform it
+#' into as many indicator curves as the number of state input
 #' return DATAFRAME
 #' Works even on dataframe without time condition respected
 #' (same start and end)
@@ -1228,11 +1228,11 @@ generate_X_df_multistates <- function(nind = 100, N_states=3, start=0, end=100,
 #' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 #' lambdas, transition_df)
 #'
-#' si_df = state_indicatrices(df, id_col='id',
+#' si_df = state_indicator(df, id_col='id',
 #' time_col='time')
 #'
 #' @author Francois Bassac
-state_indicatrices <- function(data, id_col='id', time_col = 'time'){
+state_indicator <- function(data, id_col='id', time_col = 'time'){
   state_col = setdiff(names(data), c(id_col, time_col))
   states = sort(unique(data[[state_col]])) # Tri direct
 
@@ -1244,10 +1244,10 @@ state_indicatrices <- function(data, id_col='id', time_col = 'time'){
   return(ind[order(ind[[id_col]], ind[[time_col]]), ])
 }
 
-#' state_indicatrices_old
+#' state_indicator_old
 #'
-#' This function takes functional categorical curve as input and tranform it
-#' into as many indicatrices curves as the number of state input
+#' This function takes functional categorical curve as input and transform it
+#' into as many indicator curves as the number of state input
 #' return DATAFRAME
 #' Works even on dataframe without time condition respected
 #' (same start and end)
@@ -1272,19 +1272,19 @@ state_indicatrices <- function(data, id_col='id', time_col = 'time'){
 #' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 #' lambdas, transition_df)
 #'
-#' si_df = state_indicatrices_old(df, id_col='id',
+#' si_df = state_indicator_old(df, id_col='id',
 #' time_col='time')
 #'
 #' @author Francois Bassac
-state_indicatrices_old <- function(data, id_col='id', time_col = 'time'){
-  # This function takes functional categorical curve as input and tranform it
-  # into as many indicatrices curves as the number of state input
+state_indicator_old <- function(data, id_col='id', time_col = 'time'){
+  # This function takes functional categorical curve as input and transform it
+  # into as many indicator curves as the number of state input
   # return DATAFRAME
   # Works even on dataframe without time condition respected
   # (same start and end).
 
   if(ncol(data) != 3){
-    stop("state_indicatrices() : The dataframe should have 3 columns : id, time, state.")
+    stop("state_indicator() : The dataframe should have 3 columns : id, time, state.")
   }else{
     state_col = setdiff(names(data), c(id_col, time_col))
   }
@@ -1318,15 +1318,15 @@ state_indicatrices_old <- function(data, id_col='id', time_col = 'time'){
 
 #' split_in_state_df
 #'
-#' This function transform a categorical functional data with its indicatrices
+#' This function transform a categorical functional data with its indicator functions
 #' into a dedicated list of all the state (one per different state)
 #' This function will also work with character states.
 #'
-#' @param data a dataframe cotaining the indicatrices, output of state_indicatrices()
+#' @param data a dataframe containing the indicator functions, output of state_indicator()
 #' @param id_col a character for the id column, default 'id'
 #' @param time_col a character for the time column, default 'time'
 #'
-#' @returns a list containing the dataframe of the indicatrice of each state.
+#' @returns a list containing the dataframe of the indicator function of each state.
 #' @export
 #'
 #' @examples
@@ -1337,14 +1337,14 @@ state_indicatrices_old <- function(data, id_col='id', time_col = 'time'){
 #' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 #' lambdas, transition_df)
 #'
-#' si_df = state_indicatrices(df, id_col='id',
+#' si_df = state_indicator(df, id_col='id',
 #' time_col='time')
 #'
 #' split_df = split_in_state_df(si_df, id_col='id', time_col='time')
 #'
 #' @author Francois Bassac
 split_in_state_df <- function(data, id_col='id', time_col='time'){
-  # This function transform a categorical functional data with its indicatrices
+  # This function transform a categorical functional data with its indicator functions
   # into a dedicated list of all the state (one per different state)
   #
   # This function will also work with character states.
@@ -1418,11 +1418,11 @@ remove_duplicate_states <- function(data, id_col='id',
 
 #' build_df_per_state
 #'
-#' @param data_list a list containing the dataframe of the indicatrice of each state.
+#' @param data_list a list containing the dataframe of the indicator function of each state.
 #' @param id_col a character for the id column, default 'id'
 #' @param time_col a character for the time column, default 'time'
 #'
-#' @returns a list of the ordered states in the indicatrice form.
+#' @returns a list of the ordered states in the indicator function form.
 #' @export
 #'
 #' @examples
@@ -1433,15 +1433,15 @@ remove_duplicate_states <- function(data, id_col='id',
 #' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 #' lambdas, transition_df)
 #'
-#' si_df = state_indicatrices(df, id_col='id',
+#' si_df = state_indicator(df, id_col='id',
 #' time_col='time')
 #'
 #' split_df = split_in_state_df(si_df, id_col='id', time_col='time')
 #'
 #' @author Francois Bassac
 build_df_per_state <- function(data_list, id_col='id', time_col='time'){
-  # This function takes the data_list with one df per state indicatrice
-  # and remove the duplicated state of each state indicatrice.
+  # This function takes the data_list with one df per state indicator function
+  # and remove the duplicated state of each state indicator function.
   results_df = list()
   for(name in names(data_list)){
     results_df[[name]] = remove_duplicate_states(data_list[[name]],
@@ -1452,7 +1452,7 @@ build_df_per_state <- function(data_list, id_col='id', time_col='time'){
   return(results_df)
 }
 
-#' cat_data_to_indicatrice
+#' cat_data_to_indicator
 #'
 #' This function apply all functions to go from a categorical functional data
 #' with different states to a list of one dataframe per state indicatrice
@@ -1462,7 +1462,7 @@ build_df_per_state <- function(data_list, id_col='id', time_col='time'){
 #' @param id_col a character for the id column, default 'id'
 #' @param time_col a character for the time column, default 'time'
 #'
-#' @returns a list of the ordered states in the indicatrice form.
+#' @returns a list of the ordered states in the indicator function form.
 #' @export
 #'
 #' @examples
@@ -1472,22 +1472,22 @@ build_df_per_state <- function(data_list, id_col='id', time_col='time'){
 #'
 #' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 #' lambdas, transition_df)
-#' df_list = cat_data_to_indicatrice(df)
+#' df_list = cat_data_to_indicator(df)
 #'
 #' @author Francois Bassac
-cat_data_to_indicatrice <- function(data, id_col='id',
+cat_data_to_indicator <- function(data, id_col='id',
                                     time_col = 'time'){
   # This function apply all functions to go from a categorical functional data
-  # with different states to a list of one dataframe per state indicatrice
+  # with different states to a list of one dataframe per state indicator
   # (in the ascending order) whose duplicated states where removed.
 
   if(ncol(data) != 3){
-    stop("cat_data_to_indicatrice() : The dataframe should have 3 columns : id, time, state.")
+    stop("cat_data_to_indicator() : The dataframe should have 3 columns : id, time, state.")
   }else{
     state_col = setdiff(names(data), c(id_col, time_col))
   }
 
-  temp_1 = state_indicatrices(data, id_col=id_col,
+  temp_1 = state_indicator(data, id_col=id_col,
                               time_col=time_col)
   temp_2 = split_in_state_df(temp_1, id_col=id_col, time_col=time_col)
   temp_3 = build_df_per_state(temp_2, id_col=id_col, time_col=time_col)

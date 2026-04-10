@@ -39,17 +39,17 @@ build_u_ki_list <- function(N_states, nbComp, ms_pls_models){
 #' smoothPLS_multi
 #'
 #' This function performs the smooth PLS algorithm for both the univariate case
-#' for a Scalar Functionnal Data or a Categorical Functional Data and the
+#' for a Scalar Functional Data or a Categorical Functional Data and the
 #' multivariate case for a mix of functional data of different nature
 #' (SFD or CFD).
 #' For some input, if the same value is needed for all the different curves,
-#' no need to make a list sith the value per curve.
+#' no need to make a list with the value per curve.
 #'
 #' @param df_list a list of dataframe (id, time, value_or_state)
 #' @param Y a vector of the scalar response
 #' @param basis_obj a basis fd object or a list of basis fd object
 #' @param regul_time_obj a vector for time regularization values or a list
-#' @param curve_type_obj a list or vector of the differents curves types,
+#' @param curve_type_obj a list or vector of the different curves types,
 #' 'cat' or 'num.
 #' @param orth_obj a list or a vector of booleans if the orthonormalization
 #' is needed
@@ -136,7 +136,7 @@ smoothPLS <- function(df_list, Y,
 
   # 3 build df_processed_list and curves_names_list
   if(print_steps){
-    cat("=> Data objects formating.\n")
+    cat("=> Data objects formatting.\n")
   }
 
   if(N_curves == 1 && mode(df_list[[1]]) != 'list' && ncol(df_list) == 3){
@@ -502,7 +502,7 @@ orthonormalize_basis_list <- function(basis_list, orth_list, tol=1e-9){
 #' This function evaluates the Lambda matrix such as per column :
 #' Lambda_i = int_0^T X(t) phi_i(t) dt.
 #' The curve_type input is important function of the type of data you work with
-#' 'cat' for Categorical Funcitonal Data
+#' 'cat' for Categorical Functional Data
 #' 'num' for Scalar Functional Data
 #'
 #' @param df dataframe X(t)
@@ -994,7 +994,7 @@ evaluate_lambda_SFD_para_v1 <- function(df, basis,
 #'
 #' @param df_list a list of dataframes (id, time, value_or_state)
 #' @param N_curves a integer, the number of curves
-#' @param orth_basis_list a list of orthogonolized basis fd list
+#' @param orth_basis_list a list of orthogonalized basis fd list
 #' @param basis_list a list of basis fd functions
 #' @param curve_type_list a list of the curve type of each curve
 #' @param id_col_list a list of the id column name for each curve
@@ -1033,13 +1033,13 @@ build_new_data_list <- function(df_list, N_curves,
 
       if(all(states[[state_col]] %in% c(0, 1)) ||
          all(states[[state_col]] %in% c('0', '1')) ){
-        # case : one state CFD in indicatrice form
+        # case : one state CFD in indicator form
 
         df_processed = list(df_list[[i]])
         names(df_processed) = paste0(state_col, "_1")
       } else {
         # case : multistates CFD
-        df_processed = cat_data_to_indicatrice(df_list[[i]],
+        df_processed = cat_data_to_indicator(df_list[[i]],
                                                id_col = id_col_list[[i]],
                                                time_col = time_col_list[[i]])
       }
@@ -1146,7 +1146,7 @@ build_new_data_list <- function(df_list, N_curves,
 #' @param d_i the pls coefficient such as X = d_i t_i :
 #' plsr_model$loadings
 #' @param u_i the pls coefficient such as t_i = X u_i :
-#' plsr_model$loading.weigths
+#' plsr_model$loading.weights
 #'
 #' @returns a list Lambda = sum d_i t_i
 #' @export
@@ -1199,7 +1199,7 @@ build_spls_functions <- function(curves_names_list,
 
 #' p_w_building
 #'
-#' This functions evalutates the p_i(t) (X_i regression functions) and w_i(t)
+#' This functions evaluates the p_i(t) (X_i regression functions) and w_i(t)
 #' such as \eqn{t_i = \int_0^T w_i(t)X_{i-1}(t) dt}.
 #' The evaluation is done for all the components.
 #'
@@ -1344,9 +1344,9 @@ evaluate_V_i_function <- function(w_i_list, gamma_ij_list){
   return(V_list)
 }
 
-#' evaluate_delta_PLS
+#' evaluate_reg_curve_SPLS_uni
 #'
-#' This functions evalutates the regression function such as :
+#' This functions evaluates the regression function such as :
 #' \eqn{Y = \int_0^T delta(t) X(t) dt}.
 #'
 #'
@@ -1955,7 +1955,7 @@ smoothPLS_SFD_predict_Deprecated <- function(df_predict, delta_spls,
 #' @param regul_time_obj a list of the time regularization values
 #' @param int_mode a integer for the integration mode, 1 for integrate, 2 for
 #' pracma::trapz
-#' @param nb_pt a integrer, number of intermediate points for pracma::trapz,
+#' @param nb_pt a integer, number of intermediate points for pracma::trapz,
 #' default 10
 #' @param subdivisions a integer, number of subdivision in integrate function,
 #' default 100

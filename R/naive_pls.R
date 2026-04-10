@@ -70,7 +70,7 @@ naivePLS <- function(df_list, Y,
   regul_time_updated = list()
 
   if(print_steps){
-    cat("=> Data formating.\n")
+    cat("=> Data formatting.\n")
   }
 
   for(i in 1:N_curves){
@@ -85,13 +85,13 @@ naivePLS <- function(df_list, Y,
 
       if(all(states[[state_col]] %in% c(0, 1)) ||
          all(states[[state_col]] %in% c('0', '1')) ){
-        # case : one state CFD in indicatrice form
+        # case : one state CFD in indicator form
 
         df_processed = list(df_list[[i]])
         names(df_processed) = paste0(state_col, "_1")
       } else {
         # case : multistates CFD
-        df_processed = cat_data_to_indicatrice(df_list[[i]],
+        df_processed = cat_data_to_indicator(df_list[[i]],
                                                id_col = id_col_list[[i]],
                                                time_col = time_col_list[[i]])
       }
@@ -306,12 +306,12 @@ assert_multivariate_naivePLS_inputs <- function(df_list, Y,
   return(assert_objs)
 }
 
-#' naivePLS_formating
+#' naivePLS_formatting
 #'
 #' This function format the list of given dataframe into a time regularized
 #' matrix usable for the naivePLS function or prediction.
 #'
-#' @param df_list a list of dataframeaof 3 columns (id, time, state_or_value)
+#' @param df_list a list of dataframe of 3 columns (id, time, state_or_value)
 #' @param regul_time_obj a list of vector of time regularization values
 #' @param curve_type_obj a list of character of the type of curves
 #' @param id_col_obj a list of character for the id column names
@@ -321,7 +321,7 @@ assert_multivariate_naivePLS_inputs <- function(df_list, Y,
 #' @export
 #'
 #' @author Francois Bassacs
-naivePLS_formating <- function(df_list,
+naivePLS_formatting <- function(df_list,
                               regul_time_obj = NULL,
                               curve_type_obj = NULL,
                               id_col_obj = 'id',
@@ -359,14 +359,14 @@ naivePLS_formating <- function(df_list,
 
       if(all(states[[state_col]] %in% c(0, 1)) ||
          all(states[[state_col]] %in% c('0', '1')) ){
-        # case : one state CFD in indicatrice form
+        # case : one state CFD in indicator form
 
         df_processed = list(df_list[[i]])
         names(df_processed) = paste0(state_col, "_1")
 
       } else {
         # case : multistates CFD
-        df_processed = cat_data_to_indicatrice(df_list[[i]],
+        df_processed = cat_data_to_indicator(df_list[[i]],
                                                id_col = id_col_list[[i]],
                                                time_col = time_col_list[[i]])
       }
@@ -428,7 +428,7 @@ naivePLS_predict <- function(naive_pls_obj, df_predict_list,
                              id_col_obj = 'id',
                              time_col_obj = 'time'){
 
-  df_mod_wide = naivePLS_formating(df_list = df_predict_list,
+  df_mod_wide = naivePLS_formatting(df_list = df_predict_list,
                                    regul_time_obj = regul_time_obj,
                                    curve_type_obj = curve_type_obj,
                                    id_col_obj = id_col_obj,

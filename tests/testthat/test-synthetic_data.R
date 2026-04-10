@@ -85,8 +85,8 @@ test_that("beta functions return expected types and shapes", {
   expect_length(beta_3_real_func(t), length(t))
 })
 
-#### State_indicatrices ####
-test_that("state_indicatrices correctly transforms multi-state data", {
+#### State_indicator_functions ####
+test_that("state_indicator correctly transforms multi-state data", {
   # 1. Create a minimal multi-state individual
   # t=0: State A, t=10: State B, t=20: State A, t=30: End
   df_multi <- data.frame(
@@ -95,7 +95,7 @@ test_that("state_indicatrices correctly transforms multi-state data", {
     state = c("A", "B", "A", "A")
   )
 
-  res <- state_indicatrices(df_multi, id_col = 'id', time_col = 'time')
+  res <- state_indicator(df_multi, id_col = 'id', time_col = 'time')
 
   # Should have columns: id, time, state_A, state_B
   expect_true(all(c("state_A", "state_B") %in% names(res)))
@@ -106,7 +106,7 @@ test_that("state_indicatrices correctly transforms multi-state data", {
   expect_equal(res$state_B, c(0, 1, 0, 0))
 })
 
-test_that("cat_data_to_indicatrice preserves timing and data structure", {
+test_that("cat_data_to_indicator preserves timing and data structure", {
   # Create data with 3 states
   df_raw <- data.frame(
     id = rep(1, 5),
@@ -115,7 +115,7 @@ test_that("cat_data_to_indicatrice preserves timing and data structure", {
   )
 
   # Full processing pipeline
-  processed_list <- cat_data_to_indicatrice(df_raw, id_col = 'id',
+  processed_list <- cat_data_to_indicator(df_raw, id_col = 'id',
                                             time_col = 'time')
 
   # 1. Check list structure
@@ -133,20 +133,20 @@ test_that("cat_data_to_indicatrice preserves timing and data structure", {
   expect_true(all(s2_df$state %in% c(0, 1)))
 })
 
-test_that("cat_data_to_indicatrice handles character states correctly", {
+test_that("cat_data_to_indicator handles character states correctly", {
   df_char <- data.frame(
     id = 1,
     time = c(0, 10, 20),
     state = c("rest", "run", "run")
   )
 
-  res <- cat_data_to_indicatrice(df_char)
+  res <- cat_data_to_indicator(df_char)
   expect_named(res, c("state_rest", "state_run"))
 })
 
-test_that("cat_data_to_indicatrice stops on invalid column number", {
+test_that("cat_data_to_indicator stops on invalid column number", {
   # Function expects exactly 3 columns: id, time, state
   df_bad <- data.frame(id = 1, time = 0, state = 1, extra = 99)
-  expect_error(cat_data_to_indicatrice(df_bad),
+  expect_error(cat_data_to_indicator(df_bad),
                "The dataframe should have 3 columns")
 })

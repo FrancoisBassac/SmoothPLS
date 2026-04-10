@@ -264,7 +264,7 @@ is_orthogonal <- function(basis, tol = 1e-10) {
 
 #' gram_schmidt_orthonormalize
 #'
-#' Orthonormalizer a basis functions with Gram-Schmidt algorithm.
+#' Orthonormalize a basis functions with Gram-Schmidt algorithm.
 #'
 #' @param basis A basis object from fda package or a list of fd functions.
 #' @param output_type A character to choose the output format. "fdlist"
@@ -561,7 +561,7 @@ evaluate_id_func_integral_deprecated <- function(id_df, func, mode = 1,
 
 #' from_fd_to_func
 #'
-#' This funciton transform a fd object into a function.
+#' This function transform a fd object into a function.
 #' It require either the fd object OR the coefficient and the basis object.
 #'
 #' @param fd_obj a fd object to transform into a function
@@ -841,7 +841,7 @@ eval_max_min_y <- function(f_list, regul_time){
 #'
 #' df = generate_X_df_multistates(nind = 100, N_states, start=0, end=100,
 #' lambdas,  transition_df)
-#' df_processed = cat_data_to_indicatrice(df)
+#' df_processed = cat_data_to_indicator(df)
 #'
 #' df_regul = list()
 #' df_wide = list()
@@ -939,13 +939,13 @@ plot_CFD_individuals <- function(df_to_plot, n_ind_to_plot = 5,
 
 #' plot_model_metrics_base
 #'
-#' This funciton plots some histograms for train_results and test_results
+#' This function plots some histograms for train_results and test_results
 #'
 #' @param train_results a dataframe of train results
 #' @param test_results a dataframe of test results
 #' @param models_to_plot a list of characters of the models to plot, default
 #' c("FPLS", "SmoothPLS", "NaivePLS")
-#' @param n_digits a integer for the number of significative numbers to print,
+#' @param n_digits a integer for the number of significant numbers to print,
 #' default 3
 #'
 #' @returns a plot
@@ -1083,7 +1083,7 @@ select_from_fd_list <- function(fd_list, toDrop = NULL){
 
 #' block_diag
 #'
-#' returns a matrix whoses blocks are A and B.
+#' returns a matrix whose blocks are A and B.
 #' returns :
 #' ( A, 0 )
 #' ( 0, B )
