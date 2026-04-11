@@ -11,3 +11,6 @@
 ^logo
 ^_pkgdown.yml
 ^text.md
+^cran-comments\.md$
+^pkgdown$
+^test\.md$

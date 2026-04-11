@@ -1,6 +1,6 @@
 Package: SmoothPLS
 Type: Package
-Title: PLS algorithm for Categorical and Scalar Functional Data 
+Title: PLS Algorithm for Categorical and Scalar Functional Data 
 Version: 0.1.5
 Date: 2026-04-10
 Authors@R: c(
@@ -10,7 +10,8 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: This package performs the Smooth PLS algorithm.
+Description: SmoothPLS is a package that performs the PLS algorithm for
+    functional data.
     It was developed during a PhD thesis between DECATHLON and INRIA 2022-2026.
     The Smooth PLS method does not decompose the data into a basis. Its 
     philosophy is that we know as precisely the data as we want and that for 
