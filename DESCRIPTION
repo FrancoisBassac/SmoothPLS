@@ -18,8 +18,7 @@ Description: Performs the Partial Least-Squares ('PLS') algorithm for
     Scalar Functional Data ('SFD') and Categorical Functional Data ('CFD'), 
     providing interpretable regression curves even for discrete 
     state changes. It was developed during a PhD thesis between 'DECATHLON' 
-    and Institut national de recherche en sciences et technologies du 
-    numerique ('INRIA') 2022-2026. The 'SmoothPLS' method does not directly
+    and French research institute 'INRIA' 2022-2026. The 'SmoothPLS' method does not directly
     decompose the data into a basis; rather, it assumes the data is known as 
     precisely as desired, and for every 'PLS' component, the weight functions are 
     decomposed into the basis. For both single-state and multi-state 'CFD' 

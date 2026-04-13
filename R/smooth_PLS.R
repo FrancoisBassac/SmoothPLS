@@ -94,7 +94,7 @@ smoothPLS <- function(df_list, Y,
       cat("## Use parallelization in case of heavy computational load. ## \n")
       #nb_cores <- max(future::availableCores() - 2, 1)
       cat("## Threshold can be manualy adjusted : (default 2500) ## \n")
-      cat("## >options(SmoothPLS.parallel_threshold = 500 ## \n")
+      cat("## >options(SmoothPLS.parallel_threshold = 500) ## \n")
     }
   }
 

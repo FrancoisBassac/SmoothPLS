@@ -50,7 +50,7 @@ pkgdown::build_site()
 
 #spelling::update_wordlist()
 #usethis::use_cran_comments()
-#devtools::check_win_devel()
+devtools::check_win_devel()
 #usethis::use_build_ignore("pkgdown")
 #usethis::use_build_ignore("test.md")
 devtools::submit_cran()
