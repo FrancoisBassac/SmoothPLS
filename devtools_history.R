@@ -54,3 +54,8 @@ devtools::check_win_devel()
 #usethis::use_build_ignore("pkgdown")
 #usethis::use_build_ignore("test.md")
 devtools::submit_cran()
+
+# codecov TODO
+#install.packages("covr") #done
+#usethis::use_coverage("codecov") #done
+#usethis::use_github_action("test-coverage") #todo
