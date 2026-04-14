@@ -15,3 +15,4 @@
 ^pkgdown$
 ^test\.md$
 ^codecov\.yml$
+^pkgnet_report\.html$
