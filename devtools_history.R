@@ -59,3 +59,12 @@ devtools::submit_cran()
 #install.packages("covr") #done
 #usethis::use_coverage("codecov") #done
 #usethis::use_github_action("test-coverage") #todo
+
+# Code base view
+install.packages("pkgnet")
+# be at SmoothPLs project root
+report <- pkgnet::CreatePackageReport(
+  pkg_name = "SmoothPLS",
+  report_path = "pkgnet_report.html"
+)
+usethis::use_build_ignore("pkgnet_report.html")
