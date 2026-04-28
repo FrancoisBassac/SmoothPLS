@@ -132,43 +132,6 @@ basis = create_bspline_basis(start, end, nbasis, norder)
 plot(basis, main=paste0(nbasis, " Function basis")) # note cubic or Fourier
 ```
 
-# PFR
-## model
-```{r}
-pfr_obj = mpfr(df_list = df, Y = Y, basis_obj = basis,
-                     curve_type_obj = 'cat', int_mode = 1,
-                     print_steps = TRUE,
-                     plot_rmsep = TRUE, plot_reg_curves = TRUE,
-                     id_col_obj = 'id', time_col_obj = 'time',
-                     parallel=TRUE)
-```
-
-```{r}
-evaluate_curves_distances(real_f = beta_real_func,
-                          regul_time = regul_time, 
-                          fun_fd_list = list(
-                            pfr_obj$reg_obj$CatFD_1_state_1
-                            )
-                          )
-```
-```{r}
-y_lim = eval_max_min_y(f_list = list(pfr_obj$reg_obj$CatFD_1_state_1,
-                                     beta_real_func ), 
-                         regul_time = regul_time_0)
-
-plot(regul_time_0, beta_real_func(regul_time_0), type='l', ylab="Values",
-     xlab = 'Time', ylim = y_lim, col = 'black')
-title(paste0(names(pfr_obj$reg_obj)[2], " regression curves"))
-plot(pfr_obj$reg_obj$CatFD_1_state_1, add=TRUE, col='blue')
-legend("topleft",
-         legend = c("Real curve", "PFR"),
-         col = c("black", "blue"),
-         lty = 1,
-         lwd = 1)
-```
-
-
-
 # Naive PLS
 ## Model
 Here we perform the naive PLS on the data.
@@ -353,6 +316,47 @@ r_squared_values(Y_df_test$Y_noised, Y_hat_spls_test)
 cat("R^2 on Y_df_test$Y_real \n")
 r_squared_values(Y_df_test$Y_real, Y_hat_spls_test)
 ```
+
+# PFR
+## model
+```{r}
+pfr_obj = mpfr(df_list = df, Y = Y, basis_obj = basis,
+                     curve_type_obj = 'cat', int_mode = 1,
+                     print_steps = TRUE,
+                     plot_rmsep = TRUE, plot_reg_curves = TRUE,
+                     id_col_obj = 'id', time_col_obj = 'time',
+                     parallel=TRUE)
+```
+
+```{r}
+evaluate_curves_distances(real_f = beta_real_func,
+                          regul_time = regul_time, 
+                          fun_fd_list = list(
+                            pfr_obj$reg_obj$CatFD_1_state_1
+                            )
+                          )
+```
+```{r}
+y_lim = eval_max_min_y(f_list = list(pfr_obj$reg_obj$CatFD_1_state_1,
+                                     beta_real_func ), 
+                         regul_time = regul_time_0)
+
+plot(regul_time_0, beta_real_func(regul_time_0), type='l', ylab="Values",
+     xlab = 'Time', ylim = y_lim, col = 'black')
+title(paste0(names(pfr_obj$reg_obj)[2], " regression curves"))
+plot(pfr_obj$reg_obj$CatFD_1_state_1, add=TRUE, col='blue')
+legend("topleft",
+         legend = c("Real curve", "PFR"),
+         col = c("black", "blue"),
+         lty = 1,
+         lwd = 1)
+```
+
+```{r}
+plot(pfr_obj$modele_final$residuals)
+```
+
+
 
 # Curve comparison
 ```{r}
