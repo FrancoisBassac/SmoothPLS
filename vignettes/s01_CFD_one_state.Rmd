@@ -1,8 +1,8 @@
 ---
-title: "comparison_one_state_02"
+title: "comparison_one_state_01"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{comparison_one_state_02}
+  %\VignetteIndexEntry{comparison_one_state_01}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -102,10 +102,10 @@ names(Y_df)
 ```
 
 ```{r hist Y noised}
-par(mfrow=c(1, 2))
+oldpar <- par(mfrow=c(1, 2))
 hist(Y_df$Y_real)
 hist(Y_df$Y_noised)
-par(mfrow=c(1, 1))
+par(oldpar)
 ```
 
 ## Data manipulation
@@ -448,10 +448,10 @@ train_results
 ```
 
 ```{r}
-par(mfrow=c(1,2))
+oldpar <- par(mfrow=c(1,2))
 hist(Y_train - Y_hat_fpls)
 hist(Y_train - Y_hat_spls)
-par(mfrow=c(1,1))
+par(oldpar)
 ```
 
 
@@ -502,10 +502,10 @@ test_results
 ```
 
 ```{r}
-par(mfrow=c(1,2))
+oldpar <- par(mfrow=c(1,2))
 hist(Y_test - Y_hat_fpls)
 hist(Y_test - Y_hat_spls)
-par(mfrow=c(1,1))
+par(oldpar)
 ```
 
 ## Results plots
