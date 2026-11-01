@@ -1131,7 +1131,7 @@ block_diag <- function(A, B) {
 #' @param computational_load numeric, the size of the task
 #'
 #' @returns an integer representing the number of cores to use
-#' @importFrom future availableCores
+#' @importFrom parallelly availableCores
 #' @noRd
 get_optimal_cores <- function(parallel = TRUE, computational_load) {
   if (!parallel) {
@@ -1139,7 +1139,7 @@ get_optimal_cores <- function(parallel = TRUE, computational_load) {
   }
 
   base_threshold <- getOption("SmoothPLS.parallel_threshold", default = 2500)
-  max_cores <- max(future::availableCores() - 2, 1)
+  max_cores <- max(parallelly::availableCores() - 2, 1)
 
   # 1 coeur pour chaque bloc de 'base_threshold' calculs
   optimal_cores <- floor(computational_load / base_threshold)

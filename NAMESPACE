@@ -82,42 +82,56 @@ import(pls)
 importFrom(MASS,ginv)
 importFrom(cfda,plotData)
 importFrom(dplyr,full_join)
-importFrom(fda,Data2fd)
-importFrom(fda,create.bspline.basis)
-importFrom(fda,eval.fd)
-importFrom(fda,fd)
-importFrom(fda,inprod)
-importFrom(fda,norder.bspline)
-importFrom(future,availableCores)
-importFrom(future,multisession)
-importFrom(future,plan)
-importFrom(future,sequential)
-importFrom(future.apply,future_lapply)
-importFrom(future.apply,future_sapply)
-importFrom(graphics,plot)
-importFrom(graphics,title)
+importFrom(fda,
+  Data2fd,
+  create.bspline.basis,
+  eval.fd,
+  fd,
+  inprod,
+  norder.bspline
+)
+importFrom(future,
+  multisession,
+  plan,
+  sequential
+)
+importFrom(future.apply,
+  future_lapply,
+  future_sapply
+)
+importFrom(graphics,
+  plot,
+  title
+)
 importFrom(magrittr,"%>%")
 importFrom(mgcv,mroot)
-importFrom(pls,MSEP)
-importFrom(pls,RMSEP)
-importFrom(pls,plsr)
+importFrom(parallelly,availableCores)
+importFrom(pls,
+  MSEP,
+  RMSEP,
+  plsr
+)
 importFrom(pracma,trapz)
 importFrom(rlang,.data)
-importFrom(stats,approx)
-importFrom(stats,approxfun)
-importFrom(stats,coef)
-importFrom(stats,integrate)
-importFrom(stats,lm.influence)
-importFrom(stats,plogis)
-importFrom(stats,predict)
-importFrom(stats,rbinom)
-importFrom(stats,residuals)
-importFrom(stats,rexp)
-importFrom(stats,rgamma)
-importFrom(stats,rnorm)
-importFrom(stats,runif)
-importFrom(stats,setNames)
-importFrom(stats,var)
-importFrom(tidyr,all_of)
-importFrom(tidyr,pivot_wider)
+importFrom(stats,
+  approx,
+  approxfun,
+  coef,
+  integrate,
+  lm.influence,
+  plogis,
+  predict,
+  rbinom,
+  residuals,
+  rexp,
+  rgamma,
+  rnorm,
+  runif,
+  setNames,
+  var
+)
+importFrom(tidyr,
+  all_of,
+  pivot_wider
+)
 importFrom(utils,tail)

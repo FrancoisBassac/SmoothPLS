@@ -74,7 +74,7 @@ build_u_ki_list <- function(N_states, nbComp, ms_pls_models){
 #' @importFrom pls plsr RMSEP MSEP
 #' @importFrom stats coef
 #' @importFrom graphics plot title
-#' @importFrom future availableCores
+#' @importFrom parallelly availableCores
 #'
 #' @author Francois Bassac
 smoothPLS <- function(df_list, Y,
@@ -92,7 +92,7 @@ smoothPLS <- function(df_list, Y,
     cat("### Smooth PLS ### \n")
     if(parallel){
       cat("## Use parallelization in case of heavy computational load. ## \n")
-      #nb_cores <- max(future::availableCores() - 2, 1)
+      #nb_cores <- max(parallelly::availableCores() - 2, 1)
       cat("## Threshold can be manualy adjusted : (default 2500) ## \n")
       cat("## >options(SmoothPLS.parallel_threshold = 500) ## \n")
     }
@@ -591,7 +591,8 @@ evaluate_lambda <- function(df, basis, curve_type = NULL, int_mode = 1,
 #' @returns a matrix of dimension nbasis columns and nind rows
 #' @importFrom fda fd
 #' @importFrom future.apply future_lapply
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #'
 #' @author Francois Bassac
 evaluate_lambda_CFD <- function(df, basis, int_mode = 1,
@@ -709,7 +710,8 @@ evaluate_lambda_CFD <- function(df, basis, int_mode = 1,
 #'
 #' @returns a matrix of dimension nbasis columns and nind rows
 #' @importFrom fda fd
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply future_sapply
 #'
 #' @author Francois Bassac
@@ -719,7 +721,7 @@ evaluate_lambda_CFD_para_v1 <- function(df, basis, int_mode = 1,
                                 parallel = TRUE){
 
   if (parallel) {
-    nb_cores <- max(future::availableCores() - 2, 1)
+    nb_cores <- max(parallelly::availableCores() - 2, 1)
     old_plan <- future::plan(future::multisession, workers = nb_cores)
     on.exit(future::plan(old_plan), add = TRUE)
   } else {
@@ -795,7 +797,8 @@ evaluate_lambda_CFD_para_v1 <- function(df, basis, int_mode = 1,
 #' @importFrom fda eval.fd fd
 #' @importFrom stats approxfun integrate
 #' @importFrom pracma trapz
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply
 #'
 #' @author Francois Bassac
@@ -918,7 +921,8 @@ evaluate_lambda_SFD <- function(df, basis,
 #' @importFrom fda eval.fd fd
 #' @importFrom stats approxfun integrate
 #' @importFrom pracma trapz
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply future_sapply
 #'
 #' @author Francois Bassac
@@ -931,7 +935,7 @@ evaluate_lambda_SFD_para_v1 <- function(df, basis,
                                 parallel = TRUE){
 
   if (parallel) {
-    nb_cores <- max(future::availableCores() - 2, 1)
+    nb_cores <- max(parallelly::availableCores() - 2, 1)
     old_plan <- future::plan(future::multisession, workers = nb_cores)
     on.exit(future::plan(old_plan), add = TRUE)
   } else {
@@ -1542,7 +1546,8 @@ smoothPLS_predict_uni <- function(df_predict, delta_list, curve_type = NULL,
 #'
 #' @return A numeric vector of predicted values for each individual.
 #'
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply
 #'
 #' @author Francois Bassac
@@ -1625,7 +1630,8 @@ smoothPLS_CFD_predict <- function(df_predict, delta_spls, id_col = 'id',
 #'
 #' @return A numeric vector of predicted values for each individual.
 #'
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply future_sapply
 #'
 #' @author Francois Bassac
@@ -1634,7 +1640,7 @@ smoothPLS_CFD_predict_para_v1 <- function(df_predict, delta_spls, id_col = 'id',
                                   parallel = TRUE, ...) {
 
   if (parallel) {
-    nb_cores <- max(future::availableCores() - 2, 1)
+    nb_cores <- max(parallelly::availableCores() - 2, 1)
     old_plan <- future::plan(future::multisession, workers = nb_cores)
     on.exit(future::plan(old_plan), add = TRUE)
   } else {
@@ -1725,7 +1731,8 @@ smoothPLS_CFD_predict_Deprecated <- function(df_predict, delta_spls,
 #'
 #' @return A numeric vector of predicted values
 #'
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply
 #' @importFrom fda Data2fd inprod
 #'
@@ -1814,7 +1821,8 @@ smoothPLS_SFD_predict <- function(df_predict, delta_spls, basis_obj = NULL,
 #'
 #' @return A numeric vector of predicted values
 #'
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply future_sapply
 #' @importFrom fda Data2fd inprod
 #'
@@ -1824,7 +1832,7 @@ smoothPLS_SFD_predict_para_v1 <- function(df_predict, delta_spls, basis_obj = NU
                                   parallel = TRUE, ...) {
 
   if (parallel) {
-    nb_cores <- max(future::availableCores() - 2, 1)
+    nb_cores <- max(parallelly::availableCores() - 2, 1)
     old_plan <- future::plan(future::multisession, workers = nb_cores)
     on.exit(future::plan(old_plan), add = TRUE)
   } else {
