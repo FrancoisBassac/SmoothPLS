@@ -450,7 +450,8 @@ generate_X_df_CFD <- function(nind=500, start=0, end=100,
 #'
 #' @importFrom stats rnorm var
 #' @importFrom dplyr full_join
-#' @importFrom future availableCores plan multisession sequential
+#' @importFrom parallelly availableCores
+#' @importFrom future plan multisession sequential
 #' @importFrom future.apply future_lapply future_sapply
 #'
 #' @examples
@@ -472,7 +473,7 @@ generate_Y_df_CFD <- function(df, beta_real_func_or_list,
   set.seed(seed = seed)
 
   if (parallel) {
-    nb_cores <- max(future::availableCores() - 2, 1)
+    nb_cores <- max(parallelly::availableCores() - 2, 1)
     old_plan <- future::plan(future::multisession, workers = nb_cores)
     on.exit(future::plan(old_plan), add = TRUE)
   } else {
